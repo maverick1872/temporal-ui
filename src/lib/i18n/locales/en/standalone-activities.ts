@@ -109,4 +109,6 @@ export const Strings = {
   'priority-key': 'Priority Key',
   'fairness-key': 'Fairness Key',
   'fairness-weight': 'Fairness Weight',
+  'pause-activity': 'Pause Activity',
+  'unpause-activity': 'Unpause Activity',
 } as const;
