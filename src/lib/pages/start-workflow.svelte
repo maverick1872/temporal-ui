@@ -135,7 +135,8 @@
         }),
       });
     } catch (e) {
-      error = e?.message || translate('workflows.start-workflow-error');
+      error =
+        (e as Error)?.message || translate('workflows.start-workflow-error');
       toaster.push({
         variant: 'error',
         message: translate('workflows.start-workflow-error'),

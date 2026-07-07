@@ -4,7 +4,7 @@ import type {
   DescribeNamespaceResponse,
   ListNamespacesResponse,
 } from '$lib/types';
-import type { Settings } from '$lib/types/global';
+import type { NextPageToken, Settings } from '$lib/types/global';
 import { paginated } from '$lib/utilities/paginated';
 import { requestFromAPI } from '$lib/utilities/request-from-api';
 import { routeForApi } from '$lib/utilities/route-for-api';
@@ -50,10 +50,10 @@ export async function fetchNamespaces(
 
   try {
     const route = routeForApi('namespaces');
-    const results = await paginated(async (token: string) =>
+    const results = await paginated(async (token?: NextPageToken) =>
       requestFromAPI<ListNamespacesResponse>(route, {
         request,
-        token,
+        token: token as string,
         onError: () =>
           toaster.push({
             variant: 'error',

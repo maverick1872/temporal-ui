@@ -45,7 +45,7 @@ export class StandaloneActivityPoller {
         this.runId,
       );
     } catch (error) {
-      this.onError(error);
+      this.onError(error as Error);
       return;
     }
 
@@ -76,7 +76,7 @@ export class StandaloneActivityPoller {
             return;
           }
 
-          this.onError(error);
+          this.onError(error as Error);
           break;
         }
       }

@@ -98,7 +98,8 @@
             type: 'error',
             error: {
               message:
-                error.message || translate('search-attributes.save-error'),
+                (error as Error).message ||
+                translate('search-attributes.save-error'),
             },
           };
         }

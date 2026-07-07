@@ -107,7 +107,7 @@
       console.error('Error updating activity options:', error);
       toaster.push({
         variant: 'error',
-        message: `Options for Activity ${id} have been failed to update: ${error?.message}`,
+        message: `Options for Activity ${id} have been failed to update: ${(error as Error)?.message}`,
         duration: 5000,
       });
     } finally {

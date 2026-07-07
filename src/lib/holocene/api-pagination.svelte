@@ -111,7 +111,7 @@
       const items = response[itemsKeyname] || [];
       store.nextPageWithItems(nextPageToken, items);
     } catch (err) {
-      error = err;
+      error = err as Error;
       if (onError) onError(error);
     }
   }
@@ -193,7 +193,7 @@
       const items = response[itemsKeyname] || [];
       store.nextPageWithItems(nextPageToken, items);
     } catch (err) {
-      error = err;
+      error = err as Error;
       if (onError) onError(error);
     }
   };

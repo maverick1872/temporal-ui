@@ -40,6 +40,7 @@ import type { Payload, WorkflowExecutionStartedEvent } from '$lib/types/events';
 import type {
   NamespaceScopedRequest,
   NetworkError,
+  NextPageToken,
   Replace,
 } from '$lib/types/global';
 import type {
@@ -1072,9 +1073,9 @@ export const fetchAllPaginatedWorkflows = async (
   }
 
   const route = routeForApi('workflows', { namespace });
-  const { executions } = await paginated(async (token: string) => {
+  const { executions } = await paginated(async (token?: NextPageToken) => {
     return requestFromAPI<ListWorkflowExecutionsResponse>(route, {
-      token,
+      token: token as string,
       request,
       params: { query },
     });

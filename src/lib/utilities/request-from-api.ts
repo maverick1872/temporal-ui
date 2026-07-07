@@ -37,7 +37,7 @@ type RequestFromAPIOptions = {
   token?: string;
   onError?: ErrorCallback;
   notifyOnError?: boolean;
-  handleError?: typeof handleRequestError;
+  handleError?: ErrorCallback;
   isBrowser?: boolean;
   signal?: AbortController['signal'];
 };
@@ -154,7 +154,7 @@ export const requestFromAPI = async <T>(
     return body;
   } catch (error: unknown) {
     if (notifyOnError) {
-      handleError(error);
+      handleError(error as APIErrorResponse);
     } else {
       throw error;
     }

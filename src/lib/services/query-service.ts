@@ -95,8 +95,8 @@ export async function getWorkflowMetadata(
     }
     return metadata;
   } catch (e) {
-    if (e.message?.includes('__temporal_workflow_metadata')) {
-      const queryDefinitions = getQueryTypesFromError(e.message);
+    if ((e as Error).message?.includes('__temporal_workflow_metadata')) {
+      const queryDefinitions = getQueryTypesFromError((e as Error).message);
       return {
         definition: {
           queryDefinitions,
@@ -105,7 +105,7 @@ export async function getWorkflowMetadata(
       };
     } else {
       return {
-        error: e,
+        error: e as Error,
         currentDetails: translate('workflows.no-current-details'),
       };
     }

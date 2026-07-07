@@ -46,7 +46,7 @@ export class StandaloneNexusOperationPoller {
         this.operationId,
       );
     } catch (error) {
-      this.onError(error);
+      this.onError(error as Error);
       return;
     }
 
@@ -81,7 +81,7 @@ export class StandaloneNexusOperationPoller {
             return;
           }
 
-          this.onError(error);
+          this.onError(error as Error);
           break;
         }
       }
