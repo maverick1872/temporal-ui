@@ -1,10 +1,8 @@
 <svelte:options runes />
 
 <script lang="ts" module>
-  import type { StoryContext } from '@storybook/addon-svelte-csf';
-  import type { Meta } from '@storybook/svelte';
+  import type { Meta, StoryContext } from '@storybook/svelte';
   import { expect, userEvent, within } from '@storybook/test';
-  import type { ComponentProps } from 'svelte';
 
   import { iconNames } from '$lib/holocene/icon';
 
@@ -40,7 +38,10 @@
   const play = async ({
     canvasElement,
     step,
-  }: StoryContext<ComponentProps<typeof TabButton>>) => {
+  }: {
+    canvasElement: HTMLElement;
+    step: StoryContext['step'];
+  }) => {
     const canvas = within(canvasElement);
 
     selected.set(0);
