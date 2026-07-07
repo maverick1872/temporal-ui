@@ -49,12 +49,26 @@
       event.currentTarget.valueAsNumber <= max;
   };
 
-  const getOutputXPos = ({ value, min, max }) => {
+  const getOutputXPos = ({
+    value,
+    min,
+    max,
+  }: {
+    value: number;
+    min: number;
+    max: number;
+  }) => {
     // calculates the value as a percentage to position the output text
     return ((value - min) * 100) / (max - min);
   };
 
-  const getOutputXPosOffset = ({ outputElement, outputXPos }) => {
+  const getOutputXPosOffset = ({
+    outputElement,
+    outputXPos,
+  }: {
+    outputElement: HTMLOutputElement | undefined;
+    outputXPos: number;
+  }) => {
     // as the output text moves to the right with the slider thumb, it needs to shift left slightly
     // such that it doesn't overflow the width of the slider track.
     const offset = outputElement?.clientWidth ?? 15;

@@ -21,10 +21,10 @@
   export let x = 0;
   export let y: number;
 
-  let offsetHeight;
+  let offsetHeight: number;
   $: contentHeight = offsetHeight || 0;
 
-  const setActiveGroupHeight = (height) => {
+  const setActiveGroupHeight = (height: number) => {
     $activeGroupHeight = height;
   };
 

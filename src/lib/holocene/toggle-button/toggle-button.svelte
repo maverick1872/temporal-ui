@@ -32,8 +32,8 @@
   let className = '';
   export { className as class };
   export let group = getAppContext('group');
-  export let href = null;
-  export let base = href;
+  export let href: string | null = null;
+  export let base: string | null = href;
   export let active = false;
   export let variant: ComponentProps<Button>['variant'] = 'secondary';
 

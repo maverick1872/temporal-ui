@@ -117,7 +117,9 @@ export async function getQuery(
   signal?: AbortSignal,
 ): Promise<ParsedQuery> {
   return fetchQuery(options, signal).then(async (execution) => {
-    const { queryResult } = execution ?? { queryResult: { payloads: [] } };
+    const { queryResult } = execution ?? {
+      queryResult: { payloads: [] as QueryPayload[] },
+    };
 
     let data: ParsedQuery = queryResult.payloads;
     try {

@@ -19,7 +19,7 @@
     type ParsedQuery,
   } from '$lib/services/query-service';
   import { workflowRun } from '$lib/stores/workflow-run';
-  import type { Payloads } from '$lib/types';
+  import type { Payload } from '$lib/types';
   import type { WorkflowInteractionDefinition } from '$lib/types/workflows';
   import { encodePayloads } from '$lib/utilities/encode-payload';
   import { stringifyWithBigInt } from '$lib/utilities/parse-with-big-int';
@@ -50,7 +50,7 @@
   $: queryType = queryType || queryTypes?.[0]?.name;
 
   let queryResult: Promise<ParsedQuery>;
-  let encodePayloadResult: Promise<Payloads>;
+  let encodePayloadResult: Promise<Payload[]>;
 
   const sortByName = (
     list: WorkflowInteractionDefinition[],

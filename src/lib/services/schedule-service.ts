@@ -71,7 +71,7 @@ export const fetchAllSchedules = async (
       params: {},
       onError,
       request,
-    })) ?? { schedules: [], nextPageToken: '' };
+    })) ?? { schedules: [] as ScheduleListEntry[], nextPageToken: '' };
 
   return {
     schedules,

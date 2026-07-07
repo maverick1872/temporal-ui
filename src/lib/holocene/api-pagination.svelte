@@ -108,7 +108,8 @@
     try {
       const response = await fetchData($store.pageSize, '');
       const { nextPageToken } = response;
-      const items = response[itemsKeyname] || [];
+      const items =
+        (response as unknown as Record<string, T[]>)[itemsKeyname] || [];
       store.nextPageWithItems(nextPageToken, items);
     } catch (err) {
       error = err as Error;
@@ -127,7 +128,8 @@
           $store.indexData[$store.index].nextToken,
         );
         const { nextPageToken } = response;
-        const items = response[itemsKeyname] || [];
+        const items =
+          (response as unknown as Record<string, T[]>)[itemsKeyname] || [];
         store.nextPageWithItems(nextPageToken, items);
       } catch (error) {
         if (isError(error) && onError) {
@@ -190,7 +192,8 @@
       const fetchItems = await onFetch();
       const response = await fetchItems($store.pageSize, '', query);
       const { nextPageToken } = response;
-      const items = response[itemsKeyname] || [];
+      const items =
+        (response as unknown as Record<string, T[]>)[itemsKeyname] || [];
       store.nextPageWithItems(nextPageToken, items);
     } catch (err) {
       error = err as Error;

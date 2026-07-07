@@ -15,7 +15,7 @@
   let panX = 0;
   let panY = 0;
 
-  let svg;
+  let svg: SVGSVGElement;
 
   $: viewBox = {
     x: panX,

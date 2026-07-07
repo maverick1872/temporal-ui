@@ -14,14 +14,19 @@
 </script>
 
 <script lang="ts">
+  import type { StoryContext } from '@storybook/addon-svelte-csf';
   import { Story, Template } from '@storybook/addon-svelte-csf';
   import { userEvent, within } from '@storybook/test';
+  import type { ComponentProps } from 'svelte';
 
   import Editor from './editor.svelte';
   import MarkdownEditor from './markdown-editor.svelte';
   import Preview from './preview.svelte';
 
-  const play: Story['play'] = async ({ canvasElement, step }) => {
+  const play = async ({
+    canvasElement,
+    step,
+  }: StoryContext<ComponentProps<typeof MarkdownEditor>>) => {
     const canvas = within(canvasElement);
 
     const editor = await canvas.findByRole('textbox');

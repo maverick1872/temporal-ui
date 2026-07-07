@@ -73,7 +73,7 @@
   import Icon from '$lib/holocene/icon/icon.svelte';
   import { stringifyWithBigInt } from '$lib/utilities/parse-with-big-int';
 
-  const content = {
+  const content: Record<string, string> = {
     'File A': 'console.log("***");',
     'File B': 'console.log("***");',
   };
@@ -97,7 +97,7 @@
       name: 'Section',
       items: Array.from({ length: 200 }, (_, j) => ({
         index: j,
-        flags: { a: true, b: false, c: null },
+        flags: { a: true, b: false, c: null as boolean | null },
         values: Array.from({ length: 6 }, (_, k) => ({
           k,
           v: `value-${j}-${k}`,

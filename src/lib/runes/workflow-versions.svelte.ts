@@ -69,7 +69,7 @@ export function getWorkflowPollersWithVersions(
   };
 
   const pollerHasWorkflowBuildId = $derived(
-    (poller) =>
+    (poller: PollerWithTaskQueueTypes) =>
       getPollerDeploymentName(poller) === workflowDeploymentName &&
       getPollerBuildId(poller) === workflowVersioningBuildId,
   );

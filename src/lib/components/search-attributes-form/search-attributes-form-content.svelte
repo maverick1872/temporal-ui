@@ -163,7 +163,8 @@
             {index}
             {supportedTypes}
             submitting={$submitting}
-            error={$errors?.attributes?.[index]?.['name']?.[0]}
+            error={($errors?.attributes?.[index] as { name?: string[] })
+              ?.name?.[0]}
             {disableTypeForExisting}
             isDeletable={$formData.attributes[index].isDeletable ?? true}
             onRemove={() => removeAttribute(index)}

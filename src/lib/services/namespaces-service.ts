@@ -13,7 +13,7 @@ import {
   toNamespaceStateReadable,
 } from '$lib/utilities/screaming-enums';
 
-const emptyNamespace = {
+const emptyNamespace: { namespaces: DescribeNamespaceResponse[] } = {
   namespaces: [],
 };
 

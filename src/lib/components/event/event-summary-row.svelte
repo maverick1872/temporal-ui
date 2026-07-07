@@ -171,7 +171,7 @@
     $timestamp(currentEvent?.eventTime, { format: 'short' }),
   );
 
-  const onLinkClick = (event?) => {
+  const onLinkClick = (event?: MouseEvent) => {
     expanded = !expanded;
     event?.stopPropagation?.();
     onRowClick();
@@ -186,7 +186,10 @@
     hoveredEventId = undefined;
   };
 
-  let hasRelatedActivities = (group, hoveredEventId) => {
+  let hasRelatedActivities = (
+    group: EventGroup | undefined,
+    hoveredEventId: string | undefined,
+  ) => {
     return group?.eventIds?.has(hoveredEventId);
   };
 

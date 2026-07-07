@@ -78,7 +78,7 @@ export const canBeSimplified = (
   const [key] = keys;
 
   if (keys.length !== 1) return false;
-  if (typeof value[key] !== 'string') return false;
+  if (typeof (value as Record<string, unknown>)[key] !== 'string') return false;
 
   return true;
 };
@@ -104,21 +104,22 @@ export function simplifyAttributes(
 export function simplifyAttributes<
   T = EventAttributesWithType<EventAttributeKey> | PendingActivityInfo,
 >(attributes: T, preserveTimestamps = false): T {
+  const indexableAttributes = attributes as Record<string, unknown>;
   for (const [key, value] of Object.entries(attributes)) {
     if (canBeSimplified(value)) {
-      attributes[key] = getValueForFirstKey(value);
+      indexableAttributes[key] = getValueForFirstKey(value);
     }
 
     if (isTime(key) && !preserveTimestamps) {
-      attributes[key] = formatDate(value);
+      indexableAttributes[key] = formatDate(value);
     }
 
     if (isDuration(key)) {
-      attributes[key] = formatDuration(value);
+      indexableAttributes[key] = formatDuration(value);
     }
 
     if (key === 'versioningBehavior') {
-      attributes[key] = fromScreamingEnum(value, 'VersioningBehavior');
+      indexableAttributes[key] = fromScreamingEnum(value, 'VersioningBehavior');
     }
   }
 

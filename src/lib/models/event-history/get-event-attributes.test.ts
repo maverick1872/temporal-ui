@@ -154,7 +154,7 @@ describe('toEventHistory', () => {
 
       const [event] = events;
 
-      expect(event[property]).toBeDefined();
+      expect(event[property as keyof typeof event]).toBeDefined();
     });
   }
 });

@@ -3,7 +3,7 @@
     workflowId?: string;
     runId?: string;
     scheduleId?: string;
-    type: 'input' | 'result' | undefined;
+    type: string | undefined;
     eventId?: string | undefined;
   };
 </script>

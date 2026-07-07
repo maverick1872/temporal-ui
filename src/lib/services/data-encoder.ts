@@ -41,7 +41,7 @@ export async function codeServerRequest({
   const passAccessToken = getCodecPassAccessToken(settings);
   const includeCredentials = getCodecIncludeCredentials(settings);
 
-  const headers = {
+  const headers: Record<string, string> = {
     'Content-Type': 'application/json',
     'X-Namespace': namespace,
   };

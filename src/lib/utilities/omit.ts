@@ -15,8 +15,8 @@ export const omit: Omit = (object, ...keys) => {
     [K in keyof typeof object]: (typeof object)[K];
   };
 
-  for (const key of Object.keys(object)) {
-    if (!keys.includes(key)) {
+  for (const key of Object.keys(object) as (keyof typeof object)[]) {
+    if (!keys.includes(key as string)) {
       result[key] = object[key];
     }
   }

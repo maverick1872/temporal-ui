@@ -79,31 +79,34 @@ const formatNestedAttributes = (
   attributes: CombinedAttributes,
   key: string,
 ) => {
-  if (keysToExpand.has(key) && typeof attributes[key] === 'object') {
-    for (const [nestedKey, nestedValue] of Object.entries(attributes[key])) {
+  const indexedAttributes = attributes as Record<string, unknown>;
+  const nested = indexedAttributes[key];
+  if (keysToExpand.has(key) && typeof nested === 'object' && nested) {
+    for (const [nestedKey, nestedValue] of Object.entries(nested)) {
       const shouldDisplayNested = shouldDisplayNestedAttribute(nestedValue);
       if (shouldDisplayNested) {
         if (keysToFormat.has(nestedKey)) {
-          attributes[`${key}${capitalize(nestedKey)}`] = formatValue(
+          indexedAttributes[`${key}${capitalize(nestedKey)}`] = formatValue(
             nestedKey,
             nestedValue,
           );
         } else {
-          attributes[`${key}${capitalize(nestedKey)}`] = nestedValue;
+          indexedAttributes[`${key}${capitalize(nestedKey)}`] = nestedValue;
         }
       }
     }
-    delete attributes[key];
+    delete indexedAttributes[key];
   }
 };
 
 export const formatAttributes = (event: IterableEvent): CombinedAttributes => {
   const attributes: CombinedAttributes = {};
+  const indexedAttributes = attributes as Record<string, unknown>;
 
   if (event.attributes) {
     for (const [key, value] of Object.entries(event.attributes)) {
       const shouldDisplay = shouldDisplayAttribute(key, value);
-      if (shouldDisplay) attributes[key] = value;
+      if (shouldDisplay) indexedAttributes[key] = value;
       formatNestedAttributes(attributes, key);
     }
   }
@@ -114,18 +117,20 @@ export const formatGroupAttributes = (
   group: EventGroup,
 ): CombinedAttributes => {
   const attributes: CombinedAttributes = {};
+  const indexedAttributes = attributes as Record<string, unknown>;
 
   group.eventList.forEach((event) => {
     for (const [key, value] of Object.entries(event.attributes)) {
       const shouldDisplay = shouldDisplayAttribute(key, value);
-      if (shouldDisplay) attributes[key] = value;
+      if (shouldDisplay) indexedAttributes[key] = value;
       formatNestedAttributes(attributes, key);
     }
   });
 
   Object.keys(attributes).forEach((key) => {
-    if (!shouldDisplayGroupAttribute(key, attributes[key]))
-      delete attributes[key];
+    if (!shouldDisplayGroupAttribute(key, indexedAttributes[key])) {
+      delete indexedAttributes[key];
+    }
   });
   return attributes;
 };
@@ -134,6 +139,7 @@ export const formatPendingAttributes = (
   pendingActivity: PendingActivity,
 ): CombinedAttributes => {
   const attributes: CombinedAttributes = {};
+  const indexedAttributes = attributes as Record<string, unknown>;
 
   const sortedEntries = Object.entries(pendingActivity).sort(
     ([key1], [key2]) => {
@@ -148,7 +154,7 @@ export const formatPendingAttributes = (
     const formattedValue = key.toLowerCase().includes('time')
       ? formatDate(String(value))
       : value;
-    if (shouldDisplay) attributes[key] = formattedValue;
+    if (shouldDisplay) indexedAttributes[key] = formattedValue;
     formatNestedAttributes(attributes, key);
   }
 
@@ -227,7 +233,11 @@ const consolidateSingleItemGroups = (groupedAttributes: AttributeGrouping) => {
     'summary',
     'searchAttributes',
   ]);
-  for (const [key, value] of Object.entries(groupedAttributes)) {
+  const entries = Object.entries(groupedAttributes) as [
+    AttributeGroup,
+    EventAttributeKey[],
+  ][];
+  for (const [key, value] of entries) {
     if (value.length === 1 && !keysToIgnore.has(key)) {
       groupedAttributes.summary = [...groupedAttributes.summary, ...value];
       groupedAttributes[key] = [];

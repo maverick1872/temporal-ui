@@ -1,6 +1,7 @@
 <svelte:options runes />
 
 <script lang="ts" module>
+  import type { StoryContext } from '@storybook/addon-svelte-csf';
   import type { Meta } from '@storybook/svelte';
   import { within } from '@storybook/test';
   import type { ComponentProps } from 'svelte';
@@ -51,7 +52,9 @@
   /**
    * Used for the "Focused" story to focus the input.
    */
-  const focus = async ({ canvasElement }) => {
+  const focus = async ({
+    canvasElement,
+  }: StoryContext<ComponentProps<typeof DatePicker>>) => {
     const canvas = within(canvasElement);
     const input = canvas.getByRole('textbox');
     input.focus();

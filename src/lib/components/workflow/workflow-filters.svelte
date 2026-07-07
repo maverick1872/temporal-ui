@@ -25,7 +25,7 @@
   $: query = $page.url.searchParams.get('query');
   $: parameters = toListWorkflowParameters(query ?? defaultQuery);
 
-  const statuses = {
+  const statuses: Record<string, string | null> = {
     All: null,
     Running: 'Running',
     'Timed Out': 'TimedOut',

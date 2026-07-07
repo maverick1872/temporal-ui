@@ -1,8 +1,10 @@
 <svelte:options runes />
 
 <script lang="ts" module>
+  import type { StoryContext } from '@storybook/addon-svelte-csf';
   import type { Meta } from '@storybook/svelte';
   import { expect, userEvent, within } from '@storybook/test';
+  import type { ComponentProps } from 'svelte';
 
   import ToggleButton from './toggle-button.svelte';
   import ToggleButtons from './toggle-buttons.svelte';
@@ -32,7 +34,10 @@
     action('select')(index);
   };
 
-  const play: Story['play'] = async ({ canvasElement, step }) => {
+  const play = async ({
+    canvasElement,
+    step,
+  }: StoryContext<ComponentProps<typeof ToggleButton>>) => {
     const canvas = within(canvasElement);
     selected.set(0);
     const first = await canvas.findByTestId('toggle-button-0');

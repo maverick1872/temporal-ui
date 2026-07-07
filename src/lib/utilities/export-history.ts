@@ -24,8 +24,10 @@ const decodePayloads = async (
   }
 };
 
+type DecodedHistoryEvent = Awaited<ReturnType<typeof decodePayloads>>;
+
 function download(
-  events: HistoryEvent[],
+  events: DecodedHistoryEvent[],
   fileName: string,
   contentType: string,
 ) {
@@ -59,7 +61,7 @@ export const exportHistory = async ({
     if (decodeSetting === 'encoded') {
       download(rawEvents, `${runId}/events.json`, 'text/plain');
     } else {
-      const decodedEvents = [];
+      const decodedEvents: DecodedHistoryEvent[] = [];
       for (const event of rawEvents) {
         const decodedEvent = await decodePayloads(event, decodeSetting);
         decodedEvents.push(decodedEvent);

@@ -154,7 +154,7 @@ describe('toEventHistory', () => {
 
       const [event] = events;
 
-      expect(event[property]).toBeDefined();
+      expect(event[property as keyof typeof event]).toBeDefined();
     });
   }
 });
@@ -178,7 +178,7 @@ describe('fromEventToRawEvent', () => {
       const [event] = events;
       const rawEvent = fromEventToRawEvent(event);
 
-      expect(rawEvent[property]).toBeUndefined();
+      expect(rawEvent[property as keyof typeof rawEvent]).toBeUndefined();
     });
   }
 });

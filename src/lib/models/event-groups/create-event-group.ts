@@ -7,6 +7,7 @@ import type {
   SignalExternalWorkflowExecutionInitiatedEvent,
   StartChildWorkflowExecutionInitiatedEvent,
   TimerStartedEvent,
+  WorkflowEvent,
   WorkflowExecutionSignaledEvent,
   WorkflowExecutionUpdateAcceptedEvent,
   WorkflowTaskScheduledEvent,
@@ -121,7 +122,7 @@ const createGroupFor = <K extends keyof StartingEvents>(
     },
     get billableActions() {
       return this.eventList.reduce(
-        (acc, event) => event.billableActions + acc,
+        (acc: number, event: WorkflowEvent) => event.billableActions + acc,
         0,
       );
     },

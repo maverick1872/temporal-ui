@@ -222,7 +222,7 @@
   </Accordion>
 {/snippet}
 
-{#snippet nextRetry(timeDifference)}
+{#snippet nextRetry(timeDifference: string)}
   <div class="flex items-start gap-4">
     <p class="min-w-56 text-sm text-secondary/80">
       {translate('workflows.next-retry')}

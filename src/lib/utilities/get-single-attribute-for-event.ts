@@ -143,9 +143,11 @@ export const formatSummaryAttributeDisplayValue = (value: unknown): string => {
   return stringifyWithBigInt(displayValue) ?? String(displayValue);
 };
 
-export const getStackTrace = (value: unknown) => {
+export const getStackTrace = (value: unknown): string | undefined => {
   if (!isObject(value)) return undefined;
-  if (has(value, 'stackTrace') && value.stackTrace) return value.stackTrace;
+  if (has(value, 'stackTrace') && value.stackTrace) {
+    return value.stackTrace as string;
+  }
 
   for (const key in value) {
     if (isObject(value[key])) {
@@ -247,14 +249,15 @@ export const formatSummaryValue = (
     if (isRawPayload(value)) {
       return { key, value };
     }
-    const [firstKey] = Object.keys(value);
+    const record = value as Record<string, unknown>;
+    const [firstKey] = Object.keys(record);
     if (!firstKey) {
       return { key, value: {} };
     }
     if (firstKey === 'payloads') {
       return { key, value };
     }
-    return { key: key + capitalize(firstKey), value: value[firstKey] };
+    return { key: key + capitalize(firstKey), value: record[firstKey] };
   } else {
     return { key, value: value.toString() };
   }

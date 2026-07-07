@@ -193,7 +193,10 @@ export const fetchAllWorkflows = async (
       onError,
       handleError: onError,
       request,
-    })) ?? { executions: [], nextPageToken: '' };
+    })) ?? {
+      executions: [] as ListWorkflowExecutionsResponse['executions'],
+      nextPageToken: '',
+    };
 
   return {
     workflows: toWorkflowExecutions({ executions }),
@@ -655,15 +658,18 @@ export async function fetchAllChildWorkflows(
 
 export const setSearchAttributes = (
   attributes: SearchAttributesSchema,
-): SearchAttribute => {
+): NonNullable<SearchAttribute['indexedFields']> => {
   if (!attributes.length) return {};
 
-  const searchAttributes: SearchAttribute = {};
+  const searchAttributes: Record<string, Payload> = {};
   attributes.forEach((attribute) => {
     searchAttributes[attribute.label] = setBase64Payload(attribute.value);
   });
 
-  return searchAttributes;
+  // Payloads are base64 strings over REST; the proto type expects Uint8Array.
+  return searchAttributes as unknown as NonNullable<
+    SearchAttribute['indexedFields']
+  >;
 };
 
 export async function startWorkflow({
@@ -752,6 +758,15 @@ export async function startWorkflow({
   });
 }
 
+type InitialValuesForStartWorkflow = {
+  input: string;
+  encoding: PayloadInputEncoding;
+  messageType: string;
+  searchAttributes: Record<string, string | Payload> | undefined;
+  summary: string;
+  details: string;
+};
+
 export const fetchInitialValuesForStartWorkflow = async ({
   namespace,
   runId,
@@ -762,18 +777,11 @@ export const fetchInitialValuesForStartWorkflow = async ({
   runId?: string;
   workflowType?: string;
   workflowId?: string;
-}): Promise<{
-  input: string;
-  encoding: PayloadInputEncoding;
-  messageType: string;
-  searchAttributes: Record<string, string | Payload> | undefined;
-  summary: string;
-  details: string;
-}> => {
+}): Promise<InitialValuesForStartWorkflow> => {
   const handleError: ErrorCallback = (err) => {
     console.error(err);
   };
-  const emptyValues = {
+  const emptyValues: InitialValuesForStartWorkflow = {
     input: '',
     encoding: 'json/plain' as PayloadInputEncoding,
     messageType: '',
@@ -946,7 +954,7 @@ const buildDirectRoots = ({
     return {
       workflow: child,
       siblingCount,
-      children: [],
+      children: [] as RootNode[],
       rootPaths,
     };
   });

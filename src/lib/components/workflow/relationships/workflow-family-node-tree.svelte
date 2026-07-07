@@ -77,7 +77,7 @@
     return { childX: getX(), childY };
   };
 
-  const nodeClick = (e, node: RootNode) => {
+  const nodeClick = (e: Event, node: RootNode) => {
     e.stopPropagation();
     onNodeClick(node, generation);
   };

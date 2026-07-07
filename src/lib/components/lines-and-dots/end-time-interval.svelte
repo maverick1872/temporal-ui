@@ -23,7 +23,7 @@
     onlyUnderSecond: false,
   });
 
-  let endTimeInterval;
+  let endTimeInterval: ReturnType<typeof setInterval> | null;
 
   const clearEndTimeInterval = (endTime: string) => {
     if (endTime) {
@@ -32,7 +32,7 @@
     }
   };
 
-  const startStopInterval = (pauseLiveUpdates) => {
+  const startStopInterval = (pauseLiveUpdates: boolean) => {
     if (pauseLiveUpdates) {
       clearInterval(endTimeInterval);
       endTimeInterval = null;

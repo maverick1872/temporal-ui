@@ -243,7 +243,9 @@ const hasAttributes =
   (
     event: IterableEvent | CommonHistoryEvent | HistoryEvent | undefined,
   ): event is T => {
-    return Boolean(event?.[key]);
+    return Boolean(
+      (event as Partial<Record<EventAttributeKey, unknown>>)?.[key],
+    );
   };
 
 export const isWorkflowExecutionStartedEvent =

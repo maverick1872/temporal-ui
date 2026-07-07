@@ -16,6 +16,7 @@ import type {
   NamespaceScopedRequest,
   NextPageToken,
   PaginationCallbacks,
+  WithoutNextPageToken,
 } from '$lib/types/global';
 import { isSortOrder } from '$lib/utilities/is';
 import { paginated } from '$lib/utilities/paginated';
@@ -100,13 +101,19 @@ export const fetchAllEvents = async ({
     fullEventHistory.set([]);
   };
 
-  const onUpdate = (full, current) => {
+  const onUpdate = (
+    full: WithoutNextPageToken<GetWorkflowExecutionHistoryResponse>,
+    current: WithoutNextPageToken<GetWorkflowExecutionHistoryResponse>,
+  ) => {
     if (!signal) return;
     fullEventHistory.set([...toEventHistory(full.history?.events)]);
     const next = current?.history?.events;
     const hasNewHistory =
       historySize &&
-      next?.every((e) => parseInt(e.eventId) > parseInt(historySize));
+      next?.every(
+        (event: HistoryEvent) =>
+          parseInt(event.eventId) > parseInt(historySize),
+      );
     if (hasNewHistory) {
       throttleRefresh();
     }
