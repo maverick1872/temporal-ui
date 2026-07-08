@@ -36,7 +36,7 @@ export const paginated = async <T extends WithNextPageToken>(
     token,
     previousProps,
   }: PaginatedOptions<T> = {},
-): Promise<WithoutNextPageToken<T>> => {
+): Promise<WithoutNextPageToken<T> | undefined> => {
   if (!previousProps && isFunction(onStart)) onStart?.();
 
   try {
@@ -64,7 +64,5 @@ export const paginated = async <T extends WithNextPageToken>(
     onError(error);
   }
 
-  // No response / error path: callers treat a resolved value as present, so
-  // preserve the historical undefined result without widening the signature.
-  return undefined as unknown as WithoutNextPageToken<T>;
+  return undefined;
 };
