@@ -60,16 +60,17 @@ export async function fetchNamespaces(
 
   try {
     const route = routeForApi('namespaces');
-    const results = await paginated(async (token?: NextPageToken) =>
-      requestFromAPI<PaginatedNamespacesResponse>(route, {
-        request,
-        token: token as string,
-        onError: () =>
-          toaster.push({
-            variant: 'error',
-            message: 'Unable to fetch namespaces',
-          }),
-      }),
+    const results = await paginated(
+      async (token?: NextPageToken) =>
+        (await requestFromAPI<PaginatedNamespacesResponse>(route, {
+          request,
+          token: token as string,
+          onError: () =>
+            toaster.push({
+              variant: 'error',
+              message: 'Unable to fetch namespaces',
+            }),
+        })) ?? {},
     );
 
     const _namespaces: DescribeNamespaceResponse[] = (results?.namespaces ?? [])

@@ -63,7 +63,7 @@ export const isTemporalAPIError = (obj: unknown): obj is TemporalAPIError =>
 export const requestFromAPI = async <T>(
   endpoint: toURLParams[0],
   init: RequestFromAPIOptions = {},
-): Promise<T> => {
+): Promise<T | undefined> => {
   const {
     params = {},
     request = fetch,
@@ -160,9 +160,8 @@ export const requestFromAPI = async <T>(
     }
   }
 
-  // Handled-error path resolves without a body; callers await a T, so preserve
-  // the historical undefined result without widening the return type.
-  return undefined as unknown as T;
+  // Handled-error path (notifyOnError) resolves without a body.
+  return undefined;
 };
 
 const withCallerType = (

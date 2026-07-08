@@ -13,7 +13,7 @@ export const fetchCluster = async (
   return await requestFromAPI<GetClusterInfoResponse>(route, {
     request,
   }).then((clusterInformation) => {
-    return clusterInformation;
+    return clusterInformation ?? {};
   });
 };
 
@@ -27,6 +27,6 @@ export const fetchSystemInfo = async (
   return await requestFromAPI<GetSystemInfoResponse>(route, {
     request,
   }).then((systemInformation) => {
-    return systemInformation;
+    return systemInformation ?? {};
   });
 };

@@ -19,7 +19,7 @@ import { minimumVersionRequired } from '$lib/utilities/version-check';
 const requestWithActivityFallback = async <T>(
   route: string,
   init: Parameters<typeof requestFromAPI>[1],
-): Promise<T> => {
+): Promise<T | undefined> => {
   const fallbackRoute = route.replace(
     '/activities-deprecated/',
     '/activities/',
@@ -58,18 +58,20 @@ export const pauseActivity = async ({
     namespace: namespace ?? '',
   });
 
-  return requestWithActivityFallback(route, {
-    options: {
-      method: 'POST',
-      body: stringifyWithBigInt({
-        execution,
-        reason,
-        id,
-        type,
-        ...(identity && { identity }),
-      }),
-    },
-  });
+  return (
+    (await requestWithActivityFallback<ActivityPauseResponse>(route, {
+      options: {
+        method: 'POST',
+        body: stringifyWithBigInt({
+          execution,
+          reason,
+          id,
+          type,
+          ...(identity && { identity }),
+        }),
+      },
+    })) ?? {}
+  );
 };
 
 export const unpauseActivity = async ({
@@ -83,17 +85,19 @@ export const unpauseActivity = async ({
     namespace: namespace ?? '',
   });
 
-  return requestWithActivityFallback(route, {
-    options: {
-      method: 'POST',
-      body: stringifyWithBigInt({
-        execution,
-        id,
-        type,
-        ...(identity && { identity }),
-      }),
-    },
-  });
+  return (
+    (await requestWithActivityFallback<ActivityUnpauseResponse>(route, {
+      options: {
+        method: 'POST',
+        body: stringifyWithBigInt({
+          execution,
+          id,
+          type,
+          ...(identity && { identity }),
+        }),
+      },
+    })) ?? {}
+  );
 };
 
 export const resetActivity = async ({
@@ -108,18 +112,20 @@ export const resetActivity = async ({
     namespace: namespace ?? '',
   });
 
-  return requestWithActivityFallback(route, {
-    options: {
-      method: 'POST',
-      body: stringifyWithBigInt({
-        execution,
-        id,
-        type,
-        resetHeartbeat,
-        ...(identity && { identity }),
-      }),
-    },
-  });
+  return (
+    (await requestWithActivityFallback<ActivityResetResponse>(route, {
+      options: {
+        method: 'POST',
+        body: stringifyWithBigInt({
+          execution,
+          id,
+          type,
+          resetHeartbeat,
+          ...(identity && { identity }),
+        }),
+      },
+    })) ?? {}
+  );
 };
 
 export const updateActivityOptions = async ({
@@ -136,17 +142,19 @@ export const updateActivityOptions = async ({
 
   const fullMask =
     'taskQueue.name,scheduleToCloseTimeout,scheduleToStartTimeout,startToCloseTimeout,heartbeatTimeout,retryPolicy.initialInterval,retryPolicy.backoffCoefficient,retryPolicy.maximumInterval,retryPolicy.maximumAttempts';
-  return requestWithActivityFallback(route, {
-    options: {
-      method: 'POST',
-      body: stringifyWithBigInt({
-        execution,
-        id,
-        type,
-        activityOptions,
-        updateMask: fullMask,
-        ...(identity && { identity }),
-      }),
-    },
-  });
+  return (
+    (await requestWithActivityFallback<ActivityUpdateOptionsResponse>(route, {
+      options: {
+        method: 'POST',
+        body: stringifyWithBigInt({
+          execution,
+          id,
+          type,
+          activityOptions,
+          updateMask: fullMask,
+          ...(identity && { identity }),
+        }),
+      },
+    })) ?? {}
+  );
 };

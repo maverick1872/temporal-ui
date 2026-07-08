@@ -316,22 +316,24 @@ export async function terminateWorkflow({
     namespace,
     workflowId: workflow.id,
   });
-  return await requestFromAPI<null>(route, {
-    options: {
-      method: 'POST',
-      body: stringifyWithBigInt({
-        reason: reason?.trim(),
-        ...(identity && { identity }),
-        firstExecutionRunId: first,
-      }),
-    },
-    notifyOnError: false,
-    params: first
-      ? {}
-      : {
-          'execution.runId': workflow.runId,
-        },
-  });
+  return (
+    (await requestFromAPI<null>(route, {
+      options: {
+        method: 'POST',
+        body: stringifyWithBigInt({
+          reason: reason?.trim(),
+          ...(identity && { identity }),
+          firstExecutionRunId: first,
+        }),
+      },
+      notifyOnError: false,
+      params: first
+        ? {}
+        : {
+            'execution.runId': workflow.runId,
+          },
+    })) ?? null
+  );
 }
 
 export async function cancelWorkflow(
@@ -449,13 +451,15 @@ export async function updateWorkflow({
     },
   };
 
-  return requestFromAPI(route, {
-    notifyOnError: false,
-    options: {
-      method: 'POST',
-      body: stringifyWithBigInt(body),
-    },
-  });
+  return (
+    (await requestFromAPI<UpdateWorkflowResponse>(route, {
+      notifyOnError: false,
+      options: {
+        method: 'POST',
+        body: stringifyWithBigInt(body),
+      },
+    })) ?? {}
+  );
 }
 
 export async function resetWorkflow({
@@ -523,16 +527,18 @@ export async function resetWorkflow({
     body.resetReapplyType = resetReapplyType;
   }
 
-  return requestFromAPI<{ runId: string }>(route, {
-    notifyOnError: false,
-    options: {
-      method: 'POST',
-      body: stringifyWithBigInt(body),
-    },
-    params: {
-      'execution.runId': runId,
-    },
-  });
+  return (
+    (await requestFromAPI<{ runId: string }>(route, {
+      notifyOnError: false,
+      options: {
+        method: 'POST',
+        body: stringifyWithBigInt(body),
+      },
+      params: {
+        'execution.runId': runId,
+      },
+    })) ?? { runId: '' }
+  );
 }
 
 type PauseWorkflowOptions = {
@@ -757,13 +763,15 @@ export async function startWorkflow({
     ...(workflowStartDelay && { workflowStartDelay }),
   });
 
-  return requestFromAPI(route, {
-    notifyOnError: false,
-    options: {
-      method: 'POST',
-      body,
-    },
-  });
+  return (
+    (await requestFromAPI<{ runId: string }>(route, {
+      notifyOnError: false,
+      options: {
+        method: 'POST',
+        body,
+      },
+    })) ?? { runId: '' }
+  );
 }
 
 type InitialValuesForStartWorkflow = {
@@ -1093,11 +1101,13 @@ export const fetchAllPaginatedWorkflows = async (
 
   const route = routeForApi('workflows', { namespace });
   const result = await paginated(async (token?: NextPageToken) => {
-    return requestFromAPI<PaginatedWorkflowExecutionsResponse>(route, {
-      token: token as string,
-      request,
-      params: { query },
-    });
+    return (
+      (await requestFromAPI<PaginatedWorkflowExecutionsResponse>(route, {
+        token: token as string,
+        request,
+        params: { query },
+      })) ?? {}
+    );
   });
   const executions = result?.executions;
   return toWorkflowExecutions({ executions });
@@ -1138,7 +1148,8 @@ export const fetchPaginatedWorkflows = async (
       request,
       onError,
       handleError: onError,
-    }).then(({ executions = [], nextPageToken = '' }) => {
+    }).then((response) => {
+      const { executions = [], nextPageToken = '' } = response ?? {};
       return {
         items: toWorkflowExecutions({ executions }),
         nextPageToken: nextPageToken ? String(nextPageToken) : '',
@@ -1167,7 +1178,8 @@ export const fetchPaginatedArchivedWorkflows = async (
       request,
       onError,
       handleError: onError,
-    }).then(({ executions = [], nextPageToken = '' }) => {
+    }).then((response) => {
+      const { executions = [], nextPageToken = '' } = response ?? {};
       return {
         items: toWorkflowExecutions({ executions }),
         nextPageToken: nextPageToken ? String(nextPageToken) : '',

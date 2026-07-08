@@ -32,7 +32,8 @@ export const fetchPaginatedWorkers = async (
         nextPageToken: token,
         ...(parameters.query && { query: parameters.query }),
       },
-    }).then(({ workersInfo, workers, nextPageToken }) => {
+    }).then((response) => {
+      const { workersInfo, workers, nextPageToken } = response ?? {};
       return {
         items:
           workers ??
@@ -54,7 +55,9 @@ export async function describeWorker(
     namespace: parameters.namespace ?? '',
     workerInstanceKey: parameters.workerInstanceKey ?? '',
   });
-  return await requestFromAPI<DescribeWorkerResponse>(route, {
-    request,
-  });
+  return (
+    (await requestFromAPI<DescribeWorkerResponse>(route, {
+      request,
+    })) ?? {}
+  );
 }

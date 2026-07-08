@@ -78,11 +78,13 @@ export const fetchRawEvents = async ({
   const route = routeForApi(endpoint, { namespace, workflowId });
   const response = await paginated<PaginatedHistoryResponse>(
     async (token?: NextPageToken) => {
-      return requestFromAPI<PaginatedHistoryResponse>(route, {
-        token: token as string,
-        request: fetch,
-        params: { 'execution.runId': runId },
-      });
+      return (
+        (await requestFromAPI<PaginatedHistoryResponse>(route, {
+          token: token as string,
+          request: fetch,
+          params: { 'execution.runId': runId },
+        })) ?? { history: { events: [] } }
+      );
     },
     { onStart, onUpdate, onComplete },
   );
@@ -134,15 +136,17 @@ export const fetchAllEvents = async ({
   const route = routeForApi(endpoint, { namespace, workflowId });
   const response = await paginated<PaginatedHistoryResponse>(
     async (token?: NextPageToken) => {
-      return requestFromAPI<PaginatedHistoryResponse>(route, {
-        token: token as string,
-        request: fetch,
-        params: {
-          'execution.runId': runId,
-          waitNewEvent: signal ? 'true' : 'false',
-        },
-        options: { signal },
-      });
+      return (
+        (await requestFromAPI<PaginatedHistoryResponse>(route, {
+          token: token as string,
+          request: fetch,
+          params: {
+            'execution.runId': runId,
+            waitNewEvent: signal ? 'true' : 'false',
+          },
+          options: { signal },
+        })) ?? { history: { events: [] } }
+      );
     },
     { onStart, onUpdate, onComplete },
   );
@@ -207,13 +211,13 @@ export async function getPaginatedEvents({
       },
     );
     const { history, nextPageToken } =
-      await requestFromAPI<GetWorkflowExecutionHistoryResponse>(historyRoute, {
+      (await requestFromAPI<GetWorkflowExecutionHistoryResponse>(historyRoute, {
         request: fetch,
         params: {
           nextPageToken: token,
           'execution.runId': runId,
         },
-      });
+      })) ?? { history: { events: [] }, nextPageToken: '' };
 
     const events = await toEventHistory(history.events);
 

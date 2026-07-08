@@ -56,7 +56,7 @@ const formatParameters = async (
 async function fetchQuery(
   { workflow, namespace, queryType, queryArgs }: QueryRequestParameters,
   signal?: AbortSignal,
-): Promise<QueryResponse> {
+): Promise<QueryResponse | undefined> {
   workflow = await workflow;
   const parameters = await formatParameters(namespace, workflow, queryType);
   const route = routeForApi('query', parameters);

@@ -255,16 +255,21 @@ export async function describeBatchOperation(
 }
 
 const toBatchOperationDetails = (
-  apiBatchOperationDetails: DescribeBatchOperationResponse,
+  apiBatchOperationDetails: DescribeBatchOperationResponse | undefined,
 ): BatchOperation => {
   return {
     ...apiBatchOperationDetails,
     operationType: toBatchOperationTypeReadable(
-      apiBatchOperationDetails.operationType,
+      apiBatchOperationDetails?.operationType ?? 'Unspecified',
     ),
-    state: toBatchOperationStateReadable(apiBatchOperationDetails.state),
-    startTime: apiBatchOperationDetails.startTime,
-    closeTime: apiBatchOperationDetails.closeTime,
+    state: toBatchOperationStateReadable(
+      apiBatchOperationDetails?.state ?? 'Unspecified',
+    ),
+    jobId: apiBatchOperationDetails?.jobId ?? '',
+    identity: apiBatchOperationDetails?.identity ?? '',
+    reason: apiBatchOperationDetails?.reason ?? '',
+    startTime: apiBatchOperationDetails?.startTime ?? '',
+    closeTime: apiBatchOperationDetails?.closeTime ?? '',
     totalOperationCount: parseInt(
       apiBatchOperationDetails?.totalOperationCount ?? '0',
       10,
@@ -294,8 +299,8 @@ export async function listBatchOperations(
   });
 
   return {
-    nextPageToken: response.nextPageToken,
-    operations: response.operationInfo
+    nextPageToken: response?.nextPageToken ?? null,
+    operations: response?.operationInfo
       ? response.operationInfo.map(toBatchOperationInfo)
       : [],
   };
