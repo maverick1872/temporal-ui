@@ -9,18 +9,18 @@
     id: string;
     label: string;
     labelHidden?: boolean;
-    min?: number;
-    max?: number;
+    min: number;
+    max: number;
     step?: number;
     'data-testid'?: string;
   }
 
   export let label: string;
   export let labelHidden = false;
-  export let min: number = undefined as unknown as number;
-  export let max: number = undefined as unknown as number;
-  export let step: number = undefined as unknown as number;
-  export let id: string = undefined as unknown as string;
+  export let min: number;
+  export let max: number;
+  export let step: number | undefined = undefined;
+  export let id: string;
   export let value: number = Math.round((min + max) / 2);
   let valid = true;
   let outputElement: HTMLOutputElement;

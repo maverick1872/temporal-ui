@@ -35,7 +35,7 @@
   export let indeterminate = false;
   export let disabled = false;
   export let value: T = undefined as T;
-  export let group: T[] = undefined as unknown as T[];
+  export let group: T[] | undefined = undefined;
   export let valid = true;
   export let error = '';
   export let required = false;
