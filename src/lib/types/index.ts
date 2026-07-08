@@ -19,10 +19,8 @@ export type Capabilities =
   };
 
 export type NamespaceCapabilities = NonNullable<
-  NonNullable<DescribeNamespaceResponse['namespaceInfo']>['capabilities']
-> & {
-  standaloneNexusOperation?: boolean | null;
-};
+  DescribeNamespaceResponse['namespaceInfo']
+>['capabilities'];
 export type GetWorkflowExecutionHistoryResponse =
   temporal.api.workflowservice.v1.IGetWorkflowExecutionHistoryResponse;
 export type GetSearchAttributesResponse =
@@ -70,7 +68,12 @@ export type DescribeWorkerRequest =
   temporal.api.workflowservice.v1.IDescribeWorkerRequest;
 export type DescribeWorkerResponse =
   temporal.api.workflowservice.v1.IDescribeWorkerResponse;
-
+export type StartNexusOperationExecutionRequest =
+  temporal.api.workflowservice.v1.IStartNexusOperationExecutionRequest;
+export type StartNexusOperationExecutionResponse =
+  temporal.api.workflowservice.v1.IStartNexusOperationExecutionResponse;
+export type DescribeNexusOperationResponse =
+  temporal.api.workflowservice.v1.IDescribeNexusOperationExecutionResponse;
 // api.history
 
 export type History = temporal.api.history.v1.IHistory;
@@ -196,10 +199,16 @@ export type NamespaceState = temporal.api.enums.v1.NamespaceState;
 export type TaskReachability = temporal.api.enums.v1.TaskReachability;
 export type PendingNexusOperationState =
   temporal.api.enums.v1.PendingNexusOperationState;
+export type NexusOperationCancellationState =
+  temporal.api.enums.v1.NexusOperationCancellationState;
 export type CallbackState = temporal.api.enums.v1.CallbackState;
 export type VersioningBehavior = temporal.api.enums.v1.VersioningBehavior;
 export type EventType = temporal.api.enums.v1.EventType;
 export type WorkerStatus = temporal.api.enums.v1.WorkerStatus;
+export type NexusOperationIdConflictPolicy =
+  keyof typeof temporal.api.enums.v1.NexusOperationIdConflictPolicy;
+export type NexusOperationIdReusePolicy =
+  keyof typeof temporal.api.enums.v1.NexusOperationIdReusePolicy;
 
 // temporal.api.enums.v1.ResetReapplyExcludeType
 export enum ResetReapplyExcludeType {

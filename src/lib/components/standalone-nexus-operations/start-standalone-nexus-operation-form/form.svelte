@@ -34,7 +34,7 @@
   import {
     type NexusOperationIdConflictPolicy,
     type NexusOperationIdReusePolicy,
-  } from '$lib/types/nexus-operation-execution';
+  } from '$lib/types';
   import { getIdentity } from '$lib/utilities/core-context';
   import { isNetworkError } from '$lib/utilities/is-network-error';
   import { routeForStandaloneNexusOperationDetails } from '$lib/utilities/route-for';
@@ -258,7 +258,7 @@
           link: routeForStandaloneNexusOperationDetails({
             namespace,
             operationId,
-            runId,
+            runId: runId ?? '',
           }),
         });
         return { type: 'success' };
