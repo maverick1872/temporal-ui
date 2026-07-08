@@ -112,7 +112,7 @@
   export let count = 0;
   export let id: string | undefined = undefined;
   export let href: string | undefined = undefined;
-  export let target: string | undefined = undefined;
+  export let target: string | null | undefined = undefined;
   export let disableTracking = false;
 
   let element: HTMLElement;

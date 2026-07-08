@@ -12,6 +12,8 @@
   type T = $$Generic;
 
   interface $$Props extends HTMLInputAttributes {
+    id?: string;
+    disabled?: boolean;
     checked?: boolean;
     label?: string;
     labelHidden?: boolean;
