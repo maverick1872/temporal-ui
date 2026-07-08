@@ -7,11 +7,7 @@ import type {
 } from '$lib/types/events';
 import { capitalize } from '$lib/utilities/format-camel-case';
 
-import {
-  isRawPayload,
-  isRawPayloads,
-  parseRawPayloadToJSON,
-} from './decode-payload';
+import { isRawPayload, parseRawPayloadToJSON } from './decode-payload';
 import type { CombinedAttributes } from './format-event-attributes';
 import { has } from './has';
 import { isObject } from './is';

@@ -51,10 +51,7 @@ import type {
   WorkflowExecutionAPIResponse,
   WorkflowIdentifier,
 } from '$lib/types/workflows';
-import {
-  decodePayloadAndParseDataToJSON,
-  type PotentiallyDecodable,
-} from '$lib/utilities/decode-payload';
+import { decodePayloadAndParseDataToJSON } from '$lib/utilities/decode-payload';
 import {
   encodePayloads,
   setBase64Payload,

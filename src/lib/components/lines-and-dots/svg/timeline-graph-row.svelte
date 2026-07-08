@@ -3,8 +3,6 @@
   import { cva } from 'class-variance-authority';
   import { onMount } from 'svelte';
 
-  import { page } from '$app/state';
-
   import PayloadSummary from '$lib/components/payload/payload-summary.svelte';
   import { translate } from '$lib/i18n/translate';
   import type { EventGroup } from '$lib/models/event-groups/event-groups';
