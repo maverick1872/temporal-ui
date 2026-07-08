@@ -115,11 +115,11 @@
             {translate('standalone-activities.timing-and-progress')}
           </h5>
           <DetailList
-            rowCount={isClosed
+            rowCount={(isClosed
               ? ($activityExecution.info.attempt ?? 0) > 1
                 ? 5
                 : 4
-              : 2}
+              : 2) + ($activityExecution.info.startDelay ? 1 : 0)}
             aria-label={translate('standalone-activities.timing-and-progress')}
           >
             {#if isClosed}
@@ -161,6 +161,16 @@
             <DetailListTimestampValue
               timestamp={$activityExecution.info.scheduleTime}
             />
+            {#if $activityExecution.info.startDelay}
+              <DetailListLabel
+                >{translate(
+                  'standalone-activities.start-delay',
+                )}</DetailListLabel
+              >
+              <DetailListTextValue
+                text={fromSeconds($activityExecution.info.startDelay)}
+              />
+            {/if}
             <DetailListLabel
               >{translate(
                 'standalone-activities.last-started-time',
