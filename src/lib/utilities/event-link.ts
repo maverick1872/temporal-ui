@@ -167,6 +167,36 @@ export const toEventLinkView = (
     };
   }
 
+  if (link.workflow) {
+    const workflowLink = link.workflow;
+    const namespace = workflowLink.namespace;
+    const workflow = workflowLink.workflowId;
+    const run = workflowLink.runId;
+    const hasWorkflowRouteFields =
+      isPresent(namespace) && isPresent(workflow) && isPresent(run);
+    const href = hasWorkflowRouteFields
+      ? routeForWorkflow({
+          namespace,
+          workflow,
+          run,
+        })
+      : undefined;
+    const fallbackValue =
+      workflow || run || namespace || translate('common.workflow-id');
+    const value = href
+      ? workflowValueFromHref(href, fallbackValue)
+      : fallbackValue;
+
+    return {
+      variant: 'workflow',
+      key: `workflow:${namespace ?? ''}:${workflow ?? ''}:${run ?? ''}:${workflowLink.reason ?? index ?? ''}`,
+      label: translate('common.workflow-id'),
+      value,
+      href,
+      namespace: namespaceDisplay(namespace),
+    };
+  }
+
   if (link.nexusOperation) {
     const nexusOperation = link.nexusOperation;
     const namespace = nexusOperation.namespace;
