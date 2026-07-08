@@ -103,25 +103,23 @@ async function checkStrictModeErrors() {
       return;
     }
 
-    const percentageInPR = (
-      (relevantErrorCount / result.totalErrors) *
-      100
-    ).toFixed(1);
+    const fileCount = Object.keys(relevantErrors).length;
 
-    // Post summary warning with all errors
-    let warningMessage = `📊 **Strict Mode**: ${relevantErrorCount} error${relevantErrorCount > 1 ? 's' : ''} in ${Object.keys(relevantErrors).length} file${Object.keys(relevantErrors).length > 1 ? 's' : ''} (${percentageInPR}% of ${result.totalErrors} total)\n\n`;
+    // The codebase is strict-clean; any strict error in a changed file is a
+    // regression and must block the PR.
+    let failureMessage = `❌ **Strict Mode**: ${relevantErrorCount} TypeScript error${relevantErrorCount > 1 ? 's' : ''} in ${fileCount} changed file${fileCount > 1 ? 's' : ''}. Strict mode is enforced — please fix before merging.\n\n`;
 
     for (const [filename, errors] of Object.entries(relevantErrors)) {
-      warningMessage += `<details>\n<summary><strong>${filename}</strong> (${errors.length})</summary>\n\n`;
+      failureMessage += `<details>\n<summary><strong>${filename}</strong> (${errors.length})</summary>\n\n`;
 
       for (const error of errors) {
-        warningMessage += `- L${error.start.line}:${error.start.character}: ${error.message}\n`;
+        failureMessage += `- L${error.start.line}:${error.start.character}: ${error.message}\n`;
       }
 
-      warningMessage += '\n</details>\n\n';
+      failureMessage += '\n</details>\n\n';
     }
 
-    warn(warningMessage);
+    fail(failureMessage);
 
     // Post individual warnings for errors on lines in the diff
     for (const [filename, errors] of Object.entries(relevantErrors)) {
@@ -166,13 +164,13 @@ async function checkStrictModeErrors() {
         );
       }
 
-      // Post warnings for errors on lines that are in the diff
+      // Post inline failures for errors on lines that are in the diff
       for (const error of errors) {
         if (linesInDiff.has(error.start.line)) {
           if (DEBUG) {
-            console.log(`Posting warning for ${filename}:${error.start.line}`);
+            console.log(`Posting failure for ${filename}:${error.start.line}`);
           }
-          warn(error.message, filename, error.start.line);
+          fail(error.message, filename, error.start.line);
         }
       }
     }
