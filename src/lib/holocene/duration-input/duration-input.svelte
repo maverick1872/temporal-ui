@@ -50,6 +50,16 @@
   export function getFirstWholeNumberUnit<UnitLabelT extends string>(
     duration: string,
     units: Units<UnitLabelT>,
+    defaultUnit: UnitLabelT,
+  ): UnitLabelT;
+  export function getFirstWholeNumberUnit<UnitLabelT extends string>(
+    duration: string,
+    units: Units<UnitLabelT>,
+    defaultUnit?: UnitLabelT,
+  ): UnitLabelT | undefined;
+  export function getFirstWholeNumberUnit<UnitLabelT extends string>(
+    duration: string,
+    units: Units<UnitLabelT>,
     defaultUnit?: UnitLabelT,
   ): UnitLabelT | undefined {
     const secondsValue = Number(parseDuration(duration));

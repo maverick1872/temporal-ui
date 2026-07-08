@@ -101,7 +101,7 @@
         onlyUnderSecond: false,
       });
 
-      const ratio = (distance ?? 0) / (workflowDistance ?? 0);
+      const ratio = workflowDistance ? (distance ?? 0) / workflowDistance : 0;
       return Math.round(ratio * timelineWidth) + gutter;
     });
 
@@ -112,7 +112,7 @@
         onlyUnderSecond: false,
       });
 
-      const ratio = (distance ?? 0) / (workflowDistance ?? 0);
+      const ratio = workflowDistance ? (distance ?? 0) / workflowDistance : 0;
       const pausePoint = Math.round(ratio * timelineWidth) + gutter;
       points.push(pausePoint);
     }

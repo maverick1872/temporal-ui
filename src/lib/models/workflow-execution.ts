@@ -10,7 +10,7 @@ import type { Callback } from '$lib/types/nexus';
 import type {
   DecodedWorkflowSearchAttributes,
   ListWorkflowExecutionsResponse,
-  MostRecentWOrkflowVersionStamp,
+  MostRecentWorkflowVersionStamp,
   WorkflowExecution,
   WorkflowExecutionAPIResponse,
   WorkflowSearchAttributes,
@@ -124,7 +124,7 @@ export const toWorkflowExecution = (
     undefined;
   const mostRecentWorkerVersionStamp = (response?.workflowExecutionInfo
     ?.mostRecentWorkerVersionStamp ?? undefined) as
-    | MostRecentWOrkflowVersionStamp
+    | MostRecentWorkflowVersionStamp
     | undefined;
   const assignedBuildId =
     response?.workflowExecutionInfo?.assignedBuildId ?? undefined;

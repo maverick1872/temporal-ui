@@ -327,7 +327,7 @@
         'standalone-activities.form-start-to-close-timeout-hint',
       )}
       bind:value={$form.startToCloseTimeout}
-      initialUnit={initialTimeoutUnit($form.startToCloseTimeout) ?? 'second(s)'}
+      initialUnit={initialTimeoutUnit($form.startToCloseTimeout)}
       units={TIMEOUT_UNITS}
     />
 
@@ -341,8 +341,7 @@
         'standalone-activities.form-schedule-to-close-timeout-hint',
       )}
       bind:value={$form.scheduleToCloseTimeout}
-      initialUnit={initialTimeoutUnit($form.scheduleToCloseTimeout) ??
-        'second(s)'}
+      initialUnit={initialTimeoutUnit($form.scheduleToCloseTimeout)}
       units={TIMEOUT_UNITS}
     />
 
@@ -355,8 +354,7 @@
         'standalone-activities.form-schedule-to-start-timeout-hint',
       )}
       bind:value={$form.scheduleToStartTimeout}
-      initialUnit={initialTimeoutUnit($form.scheduleToStartTimeout) ??
-        'second(s)'}
+      initialUnit={initialTimeoutUnit($form.scheduleToStartTimeout)}
       units={TIMEOUT_UNITS}
     />
 
@@ -426,7 +424,7 @@
           'standalone-activities.form-heartbeat-timeout-hint',
         )}
         bind:value={$form.heartbeatTimeout}
-        initialUnit={initialTimeoutUnit($form.heartbeatTimeout) ?? 'second(s)'}
+        initialUnit={initialTimeoutUnit($form.heartbeatTimeout)}
         units={TIMEOUT_UNITS}
       />
     </Card>

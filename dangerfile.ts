@@ -87,10 +87,15 @@ async function checkStrictModeErrors() {
     const relevantErrors: Record<string, StrictError[]> = {};
     let relevantErrorCount = 0;
 
+    // svelte-check and Danger both report repo-relative POSIX paths; compare
+    // by normalized equality (substring matching both missed regressions and
+    // false-blocked unrelated files that share a path suffix).
+    const normalizePath = (p: string) => p.replace(/^\.?\//, '');
+
     for (const [filename, errors] of Object.entries(result.errorsByFile)) {
+      const normalizedFilename = normalizePath(filename);
       const isChanged = Array.from(changedFiles).some(
-        (changedFile) =>
-          changedFile.includes(filename) || filename.includes(changedFile),
+        (changedFile) => normalizePath(changedFile) === normalizedFilename,
       );
 
       if (isChanged) {

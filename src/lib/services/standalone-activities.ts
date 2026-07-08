@@ -41,9 +41,7 @@ export const TIMEOUT_UNITS: Units<DefaultUnits> = [
   MILLISECONDS,
 ];
 
-export const initialTimeoutUnit = (
-  duration: string,
-): DefaultUnits | undefined =>
+export const initialTimeoutUnit = (duration: string): DefaultUnits =>
   getFirstWholeNumberUnit(duration, TIMEOUT_UNITS, SECONDS.label);
 
 export type ListActivitiesResponse = {

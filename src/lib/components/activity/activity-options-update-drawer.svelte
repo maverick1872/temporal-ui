@@ -52,8 +52,10 @@
   let maximumAttempts = $state(
     activity?.activityOptions?.retryPolicy?.maximumAttempts ?? 0,
   );
+  // Temporal rejects backoffCoefficient < 1; default to the server default (2)
+  // when unset rather than submitting an invalid 0 via the full field mask.
   let backoffCoefficient = $state(
-    activity?.activityOptions?.retryPolicy?.backoffCoefficient ?? 0,
+    activity?.activityOptions?.retryPolicy?.backoffCoefficient ?? 2,
   );
   let initialInterval = $state(
     fromDurationToNumber(
