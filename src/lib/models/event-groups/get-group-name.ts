@@ -62,7 +62,12 @@ export const getEventGroupName = (event: CommonHistoryEvent): string => {
   }
 
   if (isNexusOperationScheduledEvent(event)) {
-    return `${event.nexusOperationScheduledEventAttributes?.service}.${event.nexusOperationScheduledEventAttributes?.operation}`;
+    return [
+      event.nexusOperationScheduledEventAttributes?.service,
+      event.nexusOperationScheduledEventAttributes?.operation,
+    ]
+      .filter(Boolean)
+      .join('.');
   }
 
   return '';
