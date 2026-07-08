@@ -2,7 +2,6 @@
   import type { WorkflowExecution } from '@temporalio/client';
 
   import Button from '$lib/holocene/button.svelte';
-  import Checkbox from '$lib/holocene/checkbox.svelte';
   import DrawerContent from '$lib/holocene/drawer-content.svelte';
   import Drawer from '$lib/holocene/drawer.svelte';
   import Input from '$lib/holocene/input/input.svelte';
@@ -30,7 +29,7 @@
   };
 
   let { open = $bindable(), namespace, execution, activity }: Props = $props();
-  let { activityId: id, activityType: type } = $derived(activity);
+  let { activityId: id } = $derived(activity);
   let taskQueue = $state(activity.activityOptions?.taskQueue?.name ?? '');
   let scheduleToCloseTimeout = $state(
     fromDurationToNumber(
