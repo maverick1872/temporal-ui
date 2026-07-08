@@ -121,7 +121,6 @@
         details,
         encoding: $encoding,
         messageType,
-        // startWorkflow's param predates SearchAttributesSchema; identical runtime shape
         searchAttributes: searchAttributes as SearchAttributeInput[],
         identity,
         workflowStartDelay: workflowStartDelay || undefined,

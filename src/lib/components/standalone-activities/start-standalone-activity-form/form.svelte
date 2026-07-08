@@ -163,9 +163,6 @@
 
       try {
         const { backoffCoefficient, maximumAttempts } = form.data;
-        // The zod-inferred form.data and the StandaloneActivityFormData domain
-        // type describe identical runtime data but are not mutually assignable
-        // (zod widens searchAttributes value to `any`), so cast at this boundary.
         const { runId } = await startStandaloneActivity({
           ...form.data,
           backoffCoefficient: backoffCoefficient

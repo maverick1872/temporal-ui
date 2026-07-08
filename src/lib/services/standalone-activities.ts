@@ -155,8 +155,6 @@ const toStartActivityExecutionRequest = async (
     };
   }
 
-  // Timeouts are optional at the API boundary and omitted when unset, but the
-  // generated request type marks them required; assert the compatible shape.
   const request = {
     identity: activityFormData.identity,
     namespace: activityFormData.namespace,

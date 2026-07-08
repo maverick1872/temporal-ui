@@ -155,8 +155,6 @@ const toStartNexusOperationRequest = async (
   if (formData.searchAttributes) {
     searchAttributes = {
       indexedFields: {
-        // Form-supplied search attributes arrive loosely typed as records;
-        // setSearchAttributes consumes them as SearchAttributesSchema entries.
         ...setSearchAttributes(
           formData.searchAttributes as unknown as SearchAttributesSchema,
         ),

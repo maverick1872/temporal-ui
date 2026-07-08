@@ -7,10 +7,8 @@ import { formSpecSchema, type FormSpecSchema } from '../schema/form';
 
 import type { RangeSpec, ScheduleSpec } from '$types';
 
-// Frozen specs carry only the representation the server consolidated them into
-// (a calendar or an interval), so they omit the sibling field. zod fills the
-// rest with defaults on validation; these values match the schema's input
-// shape, and the cast bridges to its populated output type.
+// Frozen specs carry only one representation (calendar or interval) and omit
+// the sibling; zod fills the rest with defaults, so the cast bridges to output.
 type FormSpecInput = z.input<typeof formSpecSchema>;
 type FormRange = { start: number; end?: number; step?: number };
 

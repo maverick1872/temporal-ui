@@ -46,8 +46,6 @@ export const decodeLocalActivity = async (
 
     if (!payloads?.length) return undefined;
 
-    // decodeEventAttributes may return a Memo; parsePayloadAttributes treats
-    // any value as a plain record at runtime, so narrow to its accepted union.
     const decodedAttributes = parsePayloadAttributes(
       convertedAttributes as PotentiallyDecodable,
     ) as DecodedLocalActivity;

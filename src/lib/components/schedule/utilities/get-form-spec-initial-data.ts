@@ -6,12 +6,8 @@ import {
   formSpecSchema,
 } from '../schema/form';
 
-// These seed a spec being edited in the form. They are intentionally partial —
-// zod fills the remaining fields (`interval`, `calendar`, `cronString`) with
-// their schema defaults when the form is validated on submit — so they match
-// the schema's input shape rather than its fully-populated output. The cast
-// bridges that input/output gap without materializing defaults early (which
-// would change what the form and its tests observe).
+// Partial seeds matching the schema's input shape; zod fills the remaining
+// fields with defaults on submit, so the cast bridges input to output type.
 type FormSpecInput = z.input<typeof formSpecSchema>;
 
 function seedSpec(

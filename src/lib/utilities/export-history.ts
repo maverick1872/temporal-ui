@@ -19,8 +19,6 @@ const decodePayloads = async (
       decodeSetting,
     );
 
-    // decodeEventAttributesForExport may return a Memo; parsePayloadAttributes
-    // treats any value as a plain record at runtime, so narrow to its union.
     return parsePayloadAttributes(
       convertedAttributes as PotentiallyDecodable,
       false,

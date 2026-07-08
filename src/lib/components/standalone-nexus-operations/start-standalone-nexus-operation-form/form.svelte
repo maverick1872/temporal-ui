@@ -231,10 +231,6 @@
           return acc;
         }, {});
 
-        // The zod-inferred form.data and the StartNexusOperationFormData
-        // service type describe identical runtime data but are not mutually
-        // assignable (zod widens searchAttributes value to `any`), so cast at
-        // this boundary.
         const { runId } = await startStandaloneNexusOperation({
           ...form.data,
           operationId,

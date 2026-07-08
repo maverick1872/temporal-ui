@@ -751,8 +751,6 @@ export async function startWorkflow({
         ? null
         : {
             indexedFields: {
-              // SearchAttributeInput[] and SearchAttributesSchema share an
-              // identical runtime shape; setSearchAttributes reads label/value.
               ...setSearchAttributes(
                 searchAttributes as unknown as SearchAttributesSchema,
               ),
@@ -835,7 +833,6 @@ export const fetchInitialValuesForStartWorkflow = async ({
     const firstEvent = await fetchInitialEvent(params);
 
     const startEvent = firstEvent as WorkflowExecutionStartedEvent;
-    // only single payloads are supported starting a workflow;
     const firstPayload = startEvent.attributes.input?.payloads?.[0];
     const decodedInput = firstPayload
       ? await decodePayloadAndParseDataToJSON(firstPayload, false)
