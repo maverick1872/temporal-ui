@@ -30,7 +30,7 @@
   const timezoneComboboxOptions = $derived.by(() => {
     const opts = [{ label: translate('common.utc'), value: 'UTC' }];
     for (const tz of TimezoneOptions) {
-      const offsetStr = formatOffset(tz.offset);
+      const offsetStr = formatOffset(tz.offset ?? 0);
       opts.push({
         label: `${tz.label} (${tz.abbr}) ${offsetStr}`,
         value: tz.zones?.[0] ?? tz.label,
@@ -177,7 +177,7 @@
               label={translate('schedules.occurrences-label')}
               labelHidden
               bind:value={
-                () => $form.endAfterOccurrences?.toString(),
+                () => $form.endAfterOccurrences?.toString() ?? '',
                 (v) => ($form.endAfterOccurrences = Number(v))
               }
               placeholder={translate('schedules.occurrences-placeholder')}
@@ -235,11 +235,13 @@
     </div>
 
     <ScheduleInputPayload
-      bind:input={$form.input}
+      bind:input={() => $form.input ?? '', (v) => ($form.input = v)}
       bind:editInput={$form.editInput}
       bind:encoding={$form.encoding}
-      bind:messageType={$form.messageType}
-      payloads={schedule?.schedule?.action?.startWorkflow?.input}
+      bind:messageType={
+        () => $form.messageType ?? '', (v) => ($form.messageType = v)
+      }
+      payloads={schedule?.schedule?.action?.startWorkflow?.input ?? undefined}
       showEditActions={Boolean(schedule)}
     />
   </div>

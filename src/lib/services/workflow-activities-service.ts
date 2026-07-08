@@ -55,7 +55,7 @@ export const pauseActivity = async ({
   reason?: string;
 }): Promise<ActivityPauseResponse> => {
   const route = routeForApi('activity.pause', {
-    namespace,
+    namespace: namespace ?? '',
   });
 
   return requestWithActivityFallback(route, {
@@ -80,7 +80,7 @@ export const unpauseActivity = async ({
   identity,
 }: ActivityUnpauseRequest): Promise<ActivityUnpauseResponse> => {
   const route = routeForApi('activity.unpause', {
-    namespace,
+    namespace: namespace ?? '',
   });
 
   return requestWithActivityFallback(route, {
@@ -105,7 +105,7 @@ export const resetActivity = async ({
   identity,
 }: ActivityResetRequest): Promise<ActivityResetResponse> => {
   const route = routeForApi('activity.reset', {
-    namespace,
+    namespace: namespace ?? '',
   });
 
   return requestWithActivityFallback(route, {
@@ -131,7 +131,7 @@ export const updateActivityOptions = async ({
   identity,
 }: ActivityUpdateOptionsRequest): Promise<ActivityUpdateOptionsResponse> => {
   const route = routeForApi('activity.update-options', {
-    namespace,
+    namespace: namespace ?? '',
   });
 
   const fullMask =

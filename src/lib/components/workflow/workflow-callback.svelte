@@ -41,7 +41,7 @@
   const failedState = 'Failed' as unknown as CallbackState;
   const failed = $derived(callback.state === failedState);
   const title = $derived(
-    titles[callback.state] || translate('nexus.nexus-callback'),
+    titles[callback.state ?? ''] || translate('nexus.nexus-callback'),
   );
   const links = $derived(callback?.callback?.links || []);
   const showCallbackUrl = $derived(!links.length && !link && callbackUrl);

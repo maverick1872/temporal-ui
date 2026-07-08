@@ -159,6 +159,10 @@ export const requestFromAPI = async <T>(
       throw error;
     }
   }
+
+  // Handled-error path resolves without a body; callers await a T, so preserve
+  // the historical undefined result without widening the return type.
+  return undefined as unknown as T;
 };
 
 const withCallerType = (

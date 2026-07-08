@@ -120,7 +120,7 @@ export const formatGroupAttributes = (
   const indexedAttributes = attributes as Record<string, unknown>;
 
   group.eventList.forEach((event) => {
-    for (const [key, value] of Object.entries(event.attributes)) {
+    for (const [key, value] of Object.entries(event.attributes ?? {})) {
       const shouldDisplay = shouldDisplayAttribute(key, value);
       if (shouldDisplay) indexedAttributes[key] = value;
       formatNestedAttributes(attributes, key);
@@ -213,7 +213,7 @@ const consolidateActivityGroups = (
   if (event.category === 'activity' && groupedAttributes?.activity?.length) {
     groupedAttributes.summary = [
       ...groupedAttributes.activity,
-      ...groupedAttributes.summary,
+      ...(groupedAttributes.summary ?? []),
     ];
     groupedAttributes.activity = [];
   }
@@ -221,7 +221,7 @@ const consolidateActivityGroups = (
   // Move workflow group into summary if activity
   if (event.category === 'activity' && groupedAttributes?.workflow?.length) {
     groupedAttributes.summary = [
-      ...groupedAttributes.summary,
+      ...(groupedAttributes.summary ?? []),
       ...groupedAttributes.workflow,
     ];
     groupedAttributes.workflow = [];
@@ -239,7 +239,10 @@ const consolidateSingleItemGroups = (groupedAttributes: AttributeGrouping) => {
   ][];
   for (const [key, value] of entries) {
     if (value.length === 1 && !keysToIgnore.has(key)) {
-      groupedAttributes.summary = [...groupedAttributes.summary, ...value];
+      groupedAttributes.summary = [
+        ...(groupedAttributes.summary ?? []),
+        ...value,
+      ];
       groupedAttributes[key] = [];
     }
   }
@@ -265,9 +268,9 @@ export const attributeGroups = (
     if (attributeGroup) {
       groupedAttributes[attributeGroup] = [
         key as EventAttributeKey,
-        ...groupedAttributes[attributeGroup],
+        ...(groupedAttributes[attributeGroup] ?? []),
       ];
-      groupedAttributes.summary = groupedAttributes.summary.filter(
+      groupedAttributes.summary = (groupedAttributes.summary ?? []).filter(
         (g) => g !== key,
       );
     }

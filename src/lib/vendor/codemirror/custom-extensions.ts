@@ -59,7 +59,7 @@ const baseTheme = {
   },
 };
 
-const headerStyles = (header: boolean) =>
+const headerStyles = (header: boolean): Record<string, string> =>
   header
     ? {}
     : {

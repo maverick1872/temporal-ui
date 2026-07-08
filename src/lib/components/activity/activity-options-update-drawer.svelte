@@ -31,7 +31,7 @@
 
   let { open = $bindable(), namespace, execution, activity }: Props = $props();
   let { activityId: id, activityType: type } = $derived(activity);
-  let taskQueue = $state(activity.activityOptions?.taskQueue?.name);
+  let taskQueue = $state(activity.activityOptions?.taskQueue?.name ?? '');
   let scheduleToCloseTimeout = $state(
     fromDurationToNumber(
       String(activity?.activityOptions?.scheduleToCloseTimeout),
@@ -51,10 +51,10 @@
     fromDurationToNumber(String(activity?.activityOptions?.heartbeatTimeout)),
   );
   let maximumAttempts = $state(
-    activity?.activityOptions?.retryPolicy?.maximumAttempts,
+    activity?.activityOptions?.retryPolicy?.maximumAttempts ?? 0,
   );
   let backoffCoefficient = $state(
-    activity?.activityOptions?.retryPolicy?.backoffCoefficient,
+    activity?.activityOptions?.retryPolicy?.backoffCoefficient ?? 0,
   );
   let initialInterval = $state(
     fromDurationToNumber(

@@ -46,7 +46,7 @@ export const fetchPaginatedSchedules = async (
       onError,
     }).then(({ schedules, nextPageToken }) => {
       return {
-        items: schedules,
+        items: schedules ?? [],
         nextPageToken: nextPageToken ? String(nextPageToken) : '',
       };
     });
@@ -74,7 +74,7 @@ export const fetchAllSchedules = async (
     })) ?? { schedules: [] as ScheduleListEntry[], nextPageToken: '' };
 
   return {
-    schedules,
+    schedules: schedules ?? [],
     nextPageToken: String(nextPageToken),
     error,
   };
@@ -174,8 +174,8 @@ export async function editSchedule({
       `Error editing schedule: ${err.status}: ${err.statusText}`);
 
   const route = routeForApi('schedule.edit', {
-    namespace,
-    scheduleId,
+    namespace: namespace ?? '',
+    scheduleId: scheduleId ?? '',
   });
   await requestFromAPI<null>(route, {
     options: {

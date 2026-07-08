@@ -48,7 +48,12 @@
 <div class={toast({ position: $position })}>
   <LiveRegion messages={$announcements} data-testid="toast-live-region" />
   {#each $toasts as { message, variant, id, link } (id)}
-    <ToastComponent {closeButtonLabel} {variant} {id} on:dismiss={dismissToast}>
+    <ToastComponent
+      {closeButtonLabel}
+      variant={variant ?? 'primary'}
+      id={id ?? ''}
+      on:dismiss={dismissToast}
+    >
       {#if link}
         <Link href={link}>
           {message}

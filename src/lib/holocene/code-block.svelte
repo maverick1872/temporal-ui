@@ -150,7 +150,7 @@
   let maximized = $state(false);
 
   const maximizable = $derived(
-    (maxHeight && !hasHeader && editorView?.contentHeight > maxHeight) ?? false,
+    !!maxHeight && !hasHeader && (editorView?.contentHeight ?? 0) > maxHeight,
   );
 
   // a compartment allows us to update extensions like the theme
@@ -178,7 +178,11 @@
       getLanguageExtension(language),
       !inline ? EditorView.lineWrapping : undefined,
       !inline && !editable ? foldGutter() : undefined,
-      getHeightTheme({ maxHeight, minHeight, maximized }),
+      getHeightTheme({
+        maxHeight: maxHeight ?? 0,
+        minHeight: minHeight ?? 0,
+        maximized,
+      }),
       placeholder ? placeholderExtension(placeholder) : undefined,
     ].filter((ext) => ext != null),
   );
@@ -191,7 +195,7 @@
         extensions: [staticExtensions, compartment.of(dynamicExtensions)],
       }),
       dispatch(transaction) {
-        editorView.update([transaction]);
+        editorView?.update([transaction]);
         if (transaction.docChanged) {
           onchange?.(getFormattedDoc());
         }
@@ -284,7 +288,7 @@
             {copySuccessIconTitle}
             class="m-0 rounded-full text-secondary"
             on:click={handleCopy}
-            copied={$copied}
+            copied={!!$copied}
           />
         {/if}
       </div>

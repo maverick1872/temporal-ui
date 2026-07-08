@@ -245,7 +245,7 @@ export const formatSummaryValue = (
   key: string,
   value: unknown,
 ): SummaryAttribute => {
-  if (typeof value === 'object') {
+  if (typeof value === 'object' && value !== null) {
     if (isRawPayload(value)) {
       return { key, value };
     }
@@ -257,9 +257,17 @@ export const formatSummaryValue = (
     if (firstKey === 'payloads') {
       return { key, value };
     }
-    return { key: key + capitalize(firstKey), value: record[firstKey] };
+    const firstValue = record[firstKey];
+    return {
+      key: key + capitalize(firstKey),
+      value: firstValue as
+        | string
+        | Payload
+        | Payloads
+        | Record<string, unknown>,
+    };
   } else {
-    return { key, value: value.toString() };
+    return { key, value: value === undefined ? '' : String(value) };
   }
 };
 
@@ -290,8 +298,8 @@ const preferredSummaryKeys = [
  */
 const getFirstDisplayAttribute = ({
   attributes,
-}: WorkflowEvent): SummaryAttribute => {
-  for (const [key, value] of Object.entries(attributes)) {
+}: WorkflowEvent): SummaryAttribute | undefined => {
+  for (const [key, value] of Object.entries(attributes ?? {})) {
     if (shouldDisplayAttribute(key, value)) {
       return formatSummaryValue(key, value);
     }
@@ -329,7 +337,9 @@ export const getEventSummaryAttribute = (
     if (isJavaSDK(event) && payload) {
       return formatSummaryValue('ActivityType', payload);
     }
-    const activityType = getActivityType(payload);
+    const activityType = payload
+      ? getActivityType(payload as Payload)
+      : undefined;
     if (activityType) {
       return formatSummaryValue('ActivityType', activityType);
     }
@@ -345,7 +355,7 @@ export const getEventSummaryAttribute = (
   }
 
   for (const preferredKey of preferredSummaryKeys) {
-    for (const [key, value] of Object.entries(event.attributes)) {
+    for (const [key, value] of Object.entries(event.attributes ?? {})) {
       if (key === preferredKey && shouldDisplayAttribute(key, value)) {
         return formatSummaryValue(key, value);
       }
@@ -358,6 +368,7 @@ export const getEventSummaryAttribute = (
 export const getPendingActivitySummaryAttribute = (
   event: PendingActivity,
 ): SummaryAttribute => {
+  if (!event.attempt) return emptyAttribute;
   return { key: 'attempt', value: event.attempt.toString() };
 };
 

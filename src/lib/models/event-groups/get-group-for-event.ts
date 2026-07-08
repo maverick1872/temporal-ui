@@ -5,7 +5,7 @@ import type { EventGroup, EventGroups } from './event-groups';
 export const getGroupForEvent = (
   event: WorkflowEvent,
   groups: EventGroups,
-): EventGroup => {
+): EventGroup | undefined => {
   const eventId = event.id;
 
   for (const group of groups) {

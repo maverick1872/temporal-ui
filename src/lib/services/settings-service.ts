@@ -23,7 +23,7 @@ export const fetchSettings = async (request = fetch): Promise<Settings> => {
       options: settingsResponse?.Auth?.Options,
       redirectToProvider: !!settingsResponse?.Auth?.RedirectToProvider,
     },
-    baseUrl: getApiOrigin(),
+    baseUrl: getApiOrigin() ?? '',
     codec: {
       endpoint: settingsResponse?.Codec?.Endpoint,
       passAccessToken: settingsResponse?.Codec?.PassAccessToken,

@@ -23,7 +23,7 @@ const scheduledEvent = {
       name: 'rainbow-statuses',
       kind: 'Normal',
     },
-    input: null as Payloads,
+    input: null as unknown as Payloads,
   },
 };
 
@@ -44,7 +44,7 @@ const anotherScheduledEvent = {
       name: 'test-events',
       kind: 'Normal',
     },
-    input: null as Payloads,
+    input: null as unknown as Payloads,
   },
 };
 
@@ -60,7 +60,7 @@ const startedEvent = {
     identity: '21665@temporal@',
     requestId: '0202572f-485c-426a-a3ee-02ea46d3cad7',
     attempt: 1,
-    lastFailure: null as Failure,
+    lastFailure: null as unknown as Failure,
   },
 };
 
@@ -72,7 +72,7 @@ const completedEvent = {
   version: '0',
   taskId: '1049498',
   activityTaskCompletedEventAttributes: {
-    result: null as Payloads,
+    result: null as unknown as Payloads,
     scheduledEventId: '5',
     startedEventId: '6',
     identity: '21665@temporal@',
@@ -91,7 +91,7 @@ describe('groupEvents', () => {
     const groups = groupEvents([scheduledEvent] as unknown as WorkflowEvents);
     const group = groups.find(({ id }) => id === scheduledEvent.id);
 
-    expect(group.events.get(scheduledEvent.id)).toBe(scheduledEvent);
+    expect(group?.events.get(scheduledEvent.id)).toBe(scheduledEvent);
   });
 
   it('should be able to store multiple event groups', () => {
@@ -129,8 +129,8 @@ describe('groupEvents', () => {
 
     const group = groups.find(({ id }) => id === scheduledEvent.id);
 
-    expect(group.events.size).toBe(2);
-    expect(group.events.get(completedEvent.id)).toBe(completedEvent);
+    expect(group?.events.size).toBe(2);
+    expect(group?.events.get(completedEvent.id)).toBe(completedEvent);
   });
 
   it('should add a completed event to the correct group in descending order', () => {
@@ -141,8 +141,8 @@ describe('groupEvents', () => {
 
     const group = groups.find(({ id }) => id === scheduledEvent.id);
 
-    expect(group.events.size).toBe(2);
-    expect(group.events.get(completedEvent.id)).toBe(completedEvent);
+    expect(group?.events.size).toBe(2);
+    expect(group?.events.get(completedEvent.id)).toBe(completedEvent);
   });
 
   it('should be able to add multiple event groups and their associated events', () => {
@@ -163,7 +163,9 @@ describe('getEventGroupDisplayName', () => {
   });
 
   it('should guard against empty arguments', () => {
-    expect(getEventGroupDisplayName(undefined as CommonHistoryEvent)).toBe('');
+    expect(
+      getEventGroupDisplayName(undefined as unknown as CommonHistoryEvent),
+    ).toBe('');
   });
 
   it('should get the name of a TimerStartedEvent', () => {

@@ -134,7 +134,7 @@
   const secondaryAttribute = $derived(
     getSecondaryAttributeForEvent(
       isEventGroup(event) ? event.lastEvent : event,
-      primaryAttribute?.key,
+      primaryAttribute?.key ?? '',
     ),
   );
 
@@ -337,9 +337,9 @@
           {pendingAttempt}
           {#if isPendingActivity}
             / {isPendingActivity?.maximumAttempts || '∞'}
-            {#if pendingAttempt > 1}
+            {#if pendingAttempt > 1 && isPendingActivity?.scheduledTime}
               {@const timeDifference = toTimeDifference({
-                date: isPendingActivity?.scheduledTime,
+                date: isPendingActivity.scheduledTime,
                 negativeDefault: '',
               })}
               {#if timeDifference}

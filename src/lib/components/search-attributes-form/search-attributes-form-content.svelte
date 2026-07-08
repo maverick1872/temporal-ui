@@ -156,10 +156,10 @@
           <div class="w-8"></div>
         </div>
 
-        {#each $formData.attributes as _, index}
+        {#each $formData.attributes as attribute, index}
           <SearchAttributeRow
-            name={$formData.attributes[index].name}
-            type={$formData.attributes[index].type}
+            name={attribute.name ?? ''}
+            type={attribute.type ?? ''}
             {index}
             {supportedTypes}
             submitting={$submitting}

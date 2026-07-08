@@ -5,6 +5,7 @@ import type { HistoryEvent } from '$lib/types/events';
 import {
   decodeEventAttributesForExport,
   parsePayloadAttributes,
+  type PotentiallyDecodable,
 } from './decode-payload';
 import { stringifyWithBigInt } from './parse-with-big-int';
 
@@ -18,7 +19,12 @@ const decodePayloads = async (
       decodeSetting,
     );
 
-    return parsePayloadAttributes(convertedAttributes, false);
+    // decodeEventAttributesForExport may return a Memo; parsePayloadAttributes
+    // treats any value as a plain record at runtime, so narrow to its union.
+    return parsePayloadAttributes(
+      convertedAttributes as PotentiallyDecodable,
+      false,
+    );
   } catch {
     return event;
   }
@@ -31,7 +37,7 @@ function download(
   fileName: string,
   contentType: string,
 ) {
-  const content = stringifyWithBigInt({ events }, null, 2);
+  const content = stringifyWithBigInt({ events }, undefined, 2);
   const a = document.createElement('a');
   const file = new Blob([content], { type: contentType });
   a.href = URL.createObjectURL(file);

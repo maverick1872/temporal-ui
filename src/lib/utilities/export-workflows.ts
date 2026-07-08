@@ -6,7 +6,7 @@ export const exportWorkflows = (
   workflows: WorkflowExecution[],
   page: number,
 ) => {
-  const content = stringifyWithBigInt({ workflows }, null, 2);
+  const content = stringifyWithBigInt({ workflows }, undefined, 2);
   const fileName = `workflows-${workflows.length}-${page}-${Date.now()}.json`;
   download(content, fileName, 'text/plain');
 

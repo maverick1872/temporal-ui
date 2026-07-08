@@ -155,7 +155,9 @@ const toStartActivityExecutionRequest = async (
     };
   }
 
-  return {
+  // Timeouts are optional at the API boundary and omitted when unset, but the
+  // generated request type marks them required; assert the compatible shape.
+  const request = {
     identity: activityFormData.identity,
     namespace: activityFormData.namespace,
     activityId: activityFormData.activityId,
@@ -191,7 +193,9 @@ const toStartActivityExecutionRequest = async (
         backoffCoefficient: Number(activityFormData.backoffCoefficient),
       }),
     },
-  };
+  } as StartActivityExecutionRequest;
+
+  return request;
 };
 
 export const startStandaloneActivity = async (

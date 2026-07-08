@@ -82,7 +82,7 @@
   let hidden = $state(true);
 
   let editableContent = $state(
-    stringifyWithBigInt({ hello: 'world' }, null, 2),
+    stringifyWithBigInt({ hello: 'world' }, undefined, 2),
   );
 
   const handleEditableChange = (text: string) => {
@@ -110,7 +110,7 @@
         notes: 'This is a generated payload for folding test',
       },
     };
-    return stringifyWithBigInt(obj, null, 2);
+    return stringifyWithBigInt(obj, undefined, 2);
   };
 
   const largeJson = createLargeJson();
@@ -131,7 +131,7 @@
 <Story
   name="Default"
   args={{
-    content: stringifyWithBigInt({ hello: 'world' }, null, 2),
+    content: stringifyWithBigInt({ hello: 'world' }, undefined, 2),
   }}
 />
 
@@ -147,7 +147,7 @@
   name="Inline"
   args={{
     inline: true,
-    content: stringifyWithBigInt({ hello: 'world' }, null, 2),
+    content: stringifyWithBigInt({ hello: 'world' }, undefined, 2),
   }}
 />
 
@@ -155,7 +155,7 @@
   name="Copyable"
   args={{
     copyable: true,
-    content: stringifyWithBigInt({ hello: 'world' }, null, 2),
+    content: stringifyWithBigInt({ hello: 'world' }, undefined, 2),
     copyIconTitle: 'Click to copy content',
     copySuccessIconTitle: 'Content copied to clipboard',
   }}
@@ -165,7 +165,7 @@
   name="Minimum Height"
   args={{
     minHeight: 400,
-    content: stringifyWithBigInt({ hello: 'world' }, null, 2),
+    content: stringifyWithBigInt({ hello: 'world' }, undefined, 2),
   }}
 />
 
@@ -175,7 +175,7 @@
     maxHeight: 100,
     content: stringifyWithBigInt(
       Object.getOwnPropertyDescriptors(Array.prototype),
-      null,
+      undefined,
       2,
     ),
   }}
@@ -187,7 +187,7 @@
     maxHeight: 100,
     content: stringifyWithBigInt(
       Object.getOwnPropertyDescriptors(Array.prototype),
-      null,
+      undefined,
       2,
     ),
     copyable: true,

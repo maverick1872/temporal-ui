@@ -48,6 +48,7 @@ import type {
   CountWorkflowExecutionsResponse,
   ListWorkflowExecutionsResponse,
   WorkflowExecution,
+  WorkflowExecutionAPIResponse,
   WorkflowIdentifier,
 } from '$lib/types/workflows';
 import {
@@ -81,6 +82,11 @@ export type GetWorkflowExecutionRequest = NamespaceScopedRequest & {
   workflowId: string;
   runId?: string;
 };
+
+type PaginatedWorkflowExecutionsResponse = Replace<
+  ListWorkflowExecutionsResponse,
+  { nextPageToken?: NextPageToken }
+>;
 
 export type CombinedWorkflowExecutionsResponse = {
   workflows: WorkflowExecution[];
@@ -285,7 +291,7 @@ export async function fetchWorkflow(
     workflowId: parameters.workflowId,
   });
 
-  return requestFromAPI(route, {
+  return requestFromAPI<WorkflowExecutionAPIResponse>(route, {
     request,
     notifyOnError: false,
     params: parameters.runId
@@ -425,7 +431,7 @@ export async function updateWorkflow({
 }: UpdateWorkflowOptions): Promise<UpdateWorkflowResponse> {
   const route = routeForApi('workflow.update', {
     namespace,
-    workflowId,
+    workflowId: workflowId ?? '',
     updateName: name,
   });
   const payloads = await encodePayloads({ input, encoding });
@@ -624,7 +630,7 @@ export async function fetchWorkflowForSchedule(
     workflowId: parameters.workflowId,
   });
 
-  return requestFromAPI(route, {
+  return requestFromAPI<WorkflowExecutionAPIResponse>(route, {
     request,
     onError,
     handleError: onError,
@@ -661,7 +667,10 @@ export const setSearchAttributes = (
 ): NonNullable<SearchAttribute['indexedFields']> => {
   if (!attributes.length) return {};
 
-  const searchAttributes: Record<string, Payload> = {};
+  const searchAttributes: Record<
+    string,
+    ReturnType<typeof setBase64Payload>
+  > = {};
   attributes.forEach((attribute) => {
     searchAttributes[attribute.label] = setBase64Payload(attribute.value);
   });
@@ -709,7 +718,7 @@ export async function startWorkflow({
           input: stringifyWithBigInt(summary),
           encoding: 'json/plain',
         })
-      )[0];
+      )?.[0];
     }
 
     if (details) {
@@ -718,7 +727,7 @@ export async function startWorkflow({
           input: stringifyWithBigInt(details),
           encoding: 'json/plain',
         })
-      )[0];
+      )?.[0];
     }
   } catch {
     console.error('Could not encode summary or details for starting workflow');
@@ -742,7 +751,11 @@ export async function startWorkflow({
         ? null
         : {
             indexedFields: {
-              ...setSearchAttributes(searchAttributes),
+              // SearchAttributeInput[] and SearchAttributesSchema share an
+              // identical runtime shape; setSearchAttributes reads label/value.
+              ...setSearchAttributes(
+                searchAttributes as unknown as SearchAttributesSchema,
+              ),
             },
           },
     ...(identity && { identity }),
@@ -822,13 +835,14 @@ export const fetchInitialValuesForStartWorkflow = async ({
     const firstEvent = await fetchInitialEvent(params);
 
     const startEvent = firstEvent as WorkflowExecutionStartedEvent;
-    const decodedInput = await decodePayloadAndParseDataToJSON(
-      startEvent.attributes.input?.payloads[0],
-      false,
-    ); // only single payloads are supported starting a workflow;
+    // only single payloads are supported starting a workflow;
+    const firstPayload = startEvent.attributes.input?.payloads?.[0];
+    const decodedInput = firstPayload
+      ? await decodePayloadAndParseDataToJSON(firstPayload, false)
+      : null;
 
     let summary = '';
-    if (workflow.summary) {
+    if (workflow?.summary) {
       const decodedSummary = await decodePayloadAndParseDataToJSON(
         workflow.summary,
       );
@@ -838,7 +852,7 @@ export const fetchInitialValuesForStartWorkflow = async ({
     }
 
     let details = '';
-    if (workflow.details) {
+    if (workflow?.details) {
       const decodedDetails = await decodePayloadAndParseDataToJSON(
         workflow.details,
       );
@@ -1014,7 +1028,10 @@ export async function fetchAllRootWorkflows(
     runId: rootRunId,
   });
   const workflows = await fetchAllPaginatedWorkflows(namespace, { query });
-  return buildRoots(root?.workflow, workflows);
+  if (!root?.workflow) {
+    return undefined;
+  }
+  return buildRoots(root.workflow, workflows);
 }
 
 type DirectWorkflowInputs = {
@@ -1081,13 +1098,14 @@ export const fetchAllPaginatedWorkflows = async (
   }
 
   const route = routeForApi('workflows', { namespace });
-  const { executions } = await paginated(async (token?: NextPageToken) => {
-    return requestFromAPI<ListWorkflowExecutionsResponse>(route, {
+  const result = await paginated(async (token?: NextPageToken) => {
+    return requestFromAPI<PaginatedWorkflowExecutionsResponse>(route, {
       token: token as string,
       request,
       params: { query },
     });
   });
+  const executions = result?.executions;
   return toWorkflowExecutions({ executions });
 };
 

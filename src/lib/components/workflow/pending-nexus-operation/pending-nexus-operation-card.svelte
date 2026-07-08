@@ -13,7 +13,7 @@
 
   let { operation }: { operation: PendingNexusOperation } = $props();
 
-  const failed = $derived(operation.attempt > 1);
+  const failed = $derived((operation.attempt ?? 0) > 1);
 </script>
 
 <div

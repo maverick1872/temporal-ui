@@ -4,15 +4,15 @@ import type { EventGroup } from './event-groups';
 
 export const getLastEvent = ({ events }: EventGroup): WorkflowEvent => {
   let latestEventKey = 0;
-  let result: WorkflowEvent;
+  let result: WorkflowEvent | undefined;
 
   for (const event of events.values()) {
-    const k = Number(event.id);
-    if (k >= latestEventKey) {
-      latestEventKey = k;
+    const key = Number(event.id);
+    if (key >= latestEventKey) {
+      latestEventKey = key;
       result = event;
     }
   }
 
-  return result;
+  return result!;
 };

@@ -23,7 +23,7 @@ const scheduledEvent = {
       name: 'rainbow-statuses',
       kind: 'Normal',
     },
-    input: null as Payloads,
+    input: null as unknown as Payloads,
   },
 };
 
@@ -44,7 +44,7 @@ const anotherScheduledEvent = {
       name: 'test-events',
       kind: 'Normal',
     },
-    input: null as Payloads,
+    input: null as unknown as Payloads,
   },
 };
 
@@ -60,7 +60,7 @@ const startedEvent = {
     identity: '21665@temporal@',
     requestId: '0202572f-485c-426a-a3ee-02ea46d3cad7',
     attempt: 1,
-    lastFailure: null as Failure,
+    lastFailure: null as unknown as Failure,
   },
 };
 
@@ -72,7 +72,7 @@ const completedEvent = {
   version: '0',
   taskId: '1049498',
   activityTaskCompletedEventAttributes: {
-    result: null as Payloads,
+    result: null as unknown as Payloads,
     scheduledEventId: '5',
     startedEventId: '6',
     identity: '21665@temporal@',

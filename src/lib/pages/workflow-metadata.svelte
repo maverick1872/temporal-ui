@@ -12,7 +12,7 @@
       <h3>
         {translate('events.attribute-group.search-attributes')}
       </h3>
-      <PayloadCodeBlock value={workflow.searchAttributes.indexedFields} />
+      <PayloadCodeBlock value={workflow.searchAttributes.indexedFields ?? {}} />
     </div>
   {/if}
 

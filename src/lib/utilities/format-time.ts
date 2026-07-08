@@ -158,7 +158,7 @@ export function formatDistance({
   flexibleUnits?: boolean;
 }): string {
   const duration = getDuration({ start, end, flexibleUnits });
-  const distance = formatDuration(duration);
+  const distance = formatDuration(duration ?? '');
   const msDuration = getMillisecondDuration({ start, end });
 
   if (!distance && msDuration && includeMillisecondsForUnderSecond) {
@@ -184,7 +184,7 @@ export function formatDistanceAbbreviated({
   flexibleUnits?: boolean;
 }): string {
   const duration = getDuration({ start, end, flexibleUnits });
-  const distance = formatDuration(duration, ' ');
+  const distance = formatDuration(duration ?? '', ' ');
   const formattedDistance = formatDistanceToSingleLetters(distance);
   const msDuration = getMillisecondDuration({ start, end });
 
@@ -278,7 +278,7 @@ export const fromDurationToNumber = (duration: string): string => {
   return duration?.replace('s', '');
 };
 
-export const fromNumberToDuration = (duration: string): string => {
+export const fromNumberToDuration = (duration: string): string | undefined => {
   if (!duration) return undefined;
   return duration + 's';
 };

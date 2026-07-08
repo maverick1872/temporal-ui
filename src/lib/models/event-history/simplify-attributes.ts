@@ -6,7 +6,7 @@ import type {
   PendingNexusOperation,
 } from '$lib/types/events';
 import { formatDate } from '$lib/utilities/format-date';
-import { formatDuration } from '$lib/utilities/format-time';
+import { formatDuration, type ValidTime } from '$lib/utilities/format-time';
 import { has } from '$lib/utilities/has';
 import { fromScreamingEnum } from '$lib/utilities/screaming-enums';
 
@@ -83,10 +83,13 @@ export const canBeSimplified = (
   return true;
 };
 
-export const getValueForFirstKey = (value: Record<string, string>): string => {
-  for (const v of Object.values(value)) {
-    return v;
+export const getValueForFirstKey = (
+  value: Record<string, string>,
+): string | undefined => {
+  for (const entry of Object.values(value)) {
+    return entry;
   }
+  return undefined;
 };
 
 export function simplifyAttributes(
@@ -105,17 +108,19 @@ export function simplifyAttributes<
   T = EventAttributesWithType<EventAttributeKey> | PendingActivityInfo,
 >(attributes: T, preserveTimestamps = false): T {
   const indexableAttributes = attributes as Record<string, unknown>;
-  for (const [key, value] of Object.entries(attributes)) {
+  for (const [key, value] of Object.entries(indexableAttributes)) {
     if (canBeSimplified(value)) {
       indexableAttributes[key] = getValueForFirstKey(value);
     }
 
     if (isTime(key) && !preserveTimestamps) {
-      indexableAttributes[key] = formatDate(value);
+      indexableAttributes[key] = formatDate(value as ValidTime);
     }
 
     if (isDuration(key)) {
-      indexableAttributes[key] = formatDuration(value);
+      indexableAttributes[key] = formatDuration(
+        value as string | Parameters<typeof formatDuration>[0],
+      );
     }
 
     if (key === 'versioningBehavior') {

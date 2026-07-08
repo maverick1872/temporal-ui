@@ -16,7 +16,7 @@
   const query = $derived(page.url.searchParams.get('query'));
 
   const onFetch = $derived(() =>
-    fetchPaginatedArchivedWorkflows(namespace, query),
+    fetchPaginatedArchivedWorkflows(namespace, query ?? undefined),
   );
 
   const columns = $derived(DEFAULT_WORKFLOWS_COLUMNS);

@@ -46,7 +46,11 @@
     pending={workflow.isRunning}
     delayed={isWorkflowDelayed(workflow)}
   />
-  <Dot point={[start, y]} classification={workflow.status} r={radius} />
+  <Dot
+    point={[start, y]}
+    classification={workflow.status ?? undefined}
+    r={radius}
+  />
   <Icon
     name="workflow"
     x={start - radius / 2}
@@ -56,7 +60,11 @@
     strokeWidth="4"
     class="text-black"
   />
-  <Dot point={[end, y]} classification={workflow.status} r={radius} />
+  <Dot
+    point={[end, y]}
+    classification={workflow.status ?? undefined}
+    r={radius}
+  />
   <Icon
     name="workflow"
     x={end - radius / 2}

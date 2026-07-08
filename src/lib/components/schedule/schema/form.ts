@@ -201,7 +201,10 @@ export const formScheduleSchema = z
         });
       }
 
-      if (schedule.endAfterOccurrences <= 0) {
+      if (
+        typeof schedule.endAfterOccurrences === 'number' &&
+        schedule.endAfterOccurrences <= 0
+      ) {
         ctx.addIssue({
           code: z.ZodIssueCode.custom,
           message: 'Number of occurrences must be greater than 0',

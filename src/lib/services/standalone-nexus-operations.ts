@@ -3,6 +3,7 @@ import {
   type PayloadInputEncoding,
 } from '$lib/models/payload-encoding';
 import { nexusOperationError } from '$lib/stores/nexus-operations';
+import type { SearchAttributesSchema } from '$lib/stores/search-attributes';
 import type { Payload, SearchAttribute } from '$lib/types';
 import type {
   NexusOperationExecution,
@@ -154,7 +155,11 @@ const toStartNexusOperationRequest = async (
   if (formData.searchAttributes) {
     searchAttributes = {
       indexedFields: {
-        ...setSearchAttributes(formData.searchAttributes),
+        // Form-supplied search attributes arrive loosely typed as records;
+        // setSearchAttributes consumes them as SearchAttributesSchema entries.
+        ...setSearchAttributes(
+          formData.searchAttributes as unknown as SearchAttributesSchema,
+        ),
       },
     };
   }

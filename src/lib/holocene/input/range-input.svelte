@@ -17,10 +17,10 @@
 
   export let label: string;
   export let labelHidden = false;
-  export let min: number = undefined;
-  export let max: number = undefined;
-  export let step: number = undefined;
-  export let id: string = undefined;
+  export let min: number = undefined as unknown as number;
+  export let max: number = undefined as unknown as number;
+  export let step: number = undefined as unknown as number;
+  export let id: string = undefined as unknown as string;
   export let value: number = Math.round((min + max) / 2);
   let valid = true;
   let outputElement: HTMLOutputElement;

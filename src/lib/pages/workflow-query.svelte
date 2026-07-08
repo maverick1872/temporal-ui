@@ -47,22 +47,24 @@
     }) || [],
   );
 
-  $: queryType = queryType || queryTypes?.[0]?.name;
+  $: queryType = queryType || queryTypes?.[0]?.name || '';
 
   let queryResult: Promise<ParsedQuery>;
-  let encodePayloadResult: Promise<Payload[]>;
+  let encodePayloadResult: Promise<Payload[] | null>;
 
   const sortByName = (
     list: WorkflowInteractionDefinition[],
   ): WorkflowInteractionDefinition[] => {
     return [...list].sort((a, b) => {
-      const aStartsWithDunder = a.name.startsWith('__');
-      const bStartsWithDunder = b.name.startsWith('__');
+      const aName = a.name ?? '';
+      const bName = b.name ?? '';
+      const aStartsWithDunder = aName.startsWith('__');
+      const bStartsWithDunder = bName.startsWith('__');
 
       if (aStartsWithDunder && !bStartsWithDunder) return 1;
       if (!aStartsWithDunder && bStartsWithDunder) return -1;
 
-      return a.name.localeCompare(b.name);
+      return aName.localeCompare(bName);
     });
   };
 
@@ -111,7 +113,7 @@
       namespace,
       workflow: params,
       queryType,
-      queryArgs: payloads ? { payloads } : null,
+      queryArgs: payloads ? { payloads } : undefined,
     }).finally(() => {
       reset();
     });
@@ -153,7 +155,7 @@
             on:click={() => query(queryType)}
             {loading}
             variant={edited ? 'primary' : 'secondary'}
-            leadingIcon={edited ? null : 'retry'}
+            leadingIcon={edited ? undefined : 'retry'}
             disabled={loading}
           >
             {edited
@@ -181,7 +183,7 @@
             copyIconTitle={translate('common.copy-icon-title')}
             copySuccessIconTitle={translate('common.copy-success-icon-title')}
             testId="query-result"
-            class={edited && 'opacity-50'}
+            class={edited ? 'opacity-50' : undefined}
           />
         {:catch _error}
           <EmptyState

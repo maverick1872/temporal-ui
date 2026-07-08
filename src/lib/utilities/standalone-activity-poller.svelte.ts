@@ -16,7 +16,7 @@ export class StandaloneActivityPoller {
   private namespace: string;
   private activityId: string;
   private runId: string;
-  private token: string;
+  private token: string = '';
   private onUpdate: (activityExecution: ActivityExecution) => void;
   private onError: (error: Error) => void;
 
@@ -52,7 +52,7 @@ export class StandaloneActivityPoller {
     this.onUpdate(activityExecution);
 
     if (activityExecution.info.status === 'ACTIVITY_EXECUTION_STATUS_RUNNING') {
-      this.token = activityExecution.longPollToken;
+      this.token = activityExecution.longPollToken ?? '';
 
       while (!this.abortController.signal.aborted) {
         try {
@@ -68,7 +68,7 @@ export class StandaloneActivityPoller {
             polledActivityExecution &&
             !isEmptyObject(polledActivityExecution)
           ) {
-            this.token = polledActivityExecution.longPollToken;
+            this.token = polledActivityExecution.longPollToken ?? '';
             this.onUpdate(polledActivityExecution);
           }
         } catch (error) {

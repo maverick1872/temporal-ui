@@ -49,7 +49,10 @@
   } from '$lib/utilities/route-for';
   import { fromScreamingEnum } from '$lib/utilities/screaming-enums';
 
-  import type { StandaloneActivityFormDefaults } from './types';
+  import type {
+    StandaloneActivityFormData,
+    StandaloneActivityFormDefaults,
+  } from './types';
   import Message from '../../form/message.svelte';
   import PayloadInputWithEncoding from '../../payload-input-with-encoding.svelte';
   import RandomUuidButton from '../../random-uuid-button.svelte';
@@ -65,7 +68,7 @@
 
   const formDefaults = $derived<StandaloneActivityFormDefaults>({
     namespace,
-    identity: getIdentity(),
+    identity: getIdentity() ?? '',
     encoding: 'json/plain',
     activityId: page.url.searchParams.get('activityId') ?? '',
     activityType: page.url.searchParams.get('activityType') ?? '',
@@ -99,19 +102,19 @@
       activityType: z.string().min(1, {
         message: translate('standalone-activities.form-activity-type-required'),
       }),
-      input: z.string().optional(),
-      startToCloseTimeout: z.string().optional(),
-      scheduleToCloseTimeout: z.string().optional(),
+      input: z.string().default(''),
+      startToCloseTimeout: z.string().default(''),
+      scheduleToCloseTimeout: z.string().default(''),
       encoding: z.enum(encodings).default('json/plain'),
-      messageType: z.string().optional(),
-      summary: z.string().optional(),
-      details: z.string().optional(),
-      scheduleToStartTimeout: z.string().optional(),
-      heartbeatTimeout: z.string().optional(),
+      messageType: z.string().default(''),
+      summary: z.string().default(''),
+      details: z.string().default(''),
+      scheduleToStartTimeout: z.string().default(''),
+      heartbeatTimeout: z.string().default(''),
       initialInterval: z.string().default(''),
-      backoffCoefficient: z.number().optional().nullable(),
+      backoffCoefficient: z.string().default(''),
       maximumInterval: z.string().default(''),
-      maximumAttempts: z.number().optional().nullable(),
+      maximumAttempts: z.string().default(''),
       idReusePolicy: z.string().optional(),
       idConflictPolicy: z.string().optional(),
     })
@@ -133,56 +136,63 @@
       }
     });
 
-  const { form, enhance, errors, message } = superForm(
-    {
-      ...formDefaults,
-      input: '',
-      messageType: '',
-      scheduleToStartTimeout: '',
-      summary: '',
-      details: '',
-      heartbeatTimeout: '',
-      initialInterval: '',
-      backoffCoefficient: null,
-      maximumInterval: '',
-      maximumAttempts: null,
-      idReusePolicy: '',
-      idConflictPolicy: '',
-    },
-    {
-      SPA: true,
-      dataType: 'json',
-      resetForm: false,
-      invalidateAll: false,
-      validators: zodClient(schema),
-      onUpdate: async ({ form }) => {
-        if (!form.valid) return;
+  const initialData: z.infer<typeof schema> = {
+    ...formDefaults,
+    input: '',
+    messageType: '',
+    scheduleToStartTimeout: '',
+    summary: '',
+    details: '',
+    heartbeatTimeout: '',
+    initialInterval: '',
+    backoffCoefficient: '',
+    maximumInterval: '',
+    maximumAttempts: '',
+    idReusePolicy: '',
+    idConflictPolicy: '',
+  };
 
-        try {
-          const { runId } = await startStandaloneActivity({
-            ...form.data,
-            searchAttributes,
-          });
-          toaster.push({
-            duration: 5000,
-            variant: 'success',
-            message: translate('standalone-activities.form-activity-started'),
-            link: routeForStandaloneActivityDetails({
-              namespace,
-              activityId: form.data.activityId,
-              runId,
-            }),
-          });
-          return { type: 'success' };
-        } catch (error) {
-          console.error(error);
-          return {
-            type: 'error',
-          };
-        }
-      },
+  const { form, enhance, errors, message } = superForm(initialData, {
+    SPA: true,
+    dataType: 'json',
+    resetForm: false,
+    invalidateAll: false,
+    validators: zodClient(schema),
+    onUpdate: async ({ form }) => {
+      if (!form.valid) return;
+
+      try {
+        const { backoffCoefficient, maximumAttempts } = form.data;
+        // The zod-inferred form.data and the StandaloneActivityFormData domain
+        // type describe identical runtime data but are not mutually assignable
+        // (zod widens searchAttributes value to `any`), so cast at this boundary.
+        const { runId } = await startStandaloneActivity({
+          ...form.data,
+          backoffCoefficient: backoffCoefficient
+            ? Number(backoffCoefficient)
+            : null,
+          maximumAttempts: maximumAttempts ? Number(maximumAttempts) : null,
+          searchAttributes,
+        } as StandaloneActivityFormData);
+        toaster.push({
+          duration: 5000,
+          variant: 'success',
+          message: translate('standalone-activities.form-activity-started'),
+          link: routeForStandaloneActivityDetails({
+            namespace,
+            activityId: form.data.activityId,
+            runId,
+          }),
+        });
+        return { type: 'success' };
+      } catch (error) {
+        console.error(error);
+        return {
+          type: 'error',
+        };
+      }
     },
-  );
+  });
 
   const unsubscribe = encoding.subscribe((e) => {
     $form.encoding = e;
@@ -320,7 +330,7 @@
         'standalone-activities.form-start-to-close-timeout-hint',
       )}
       bind:value={$form.startToCloseTimeout}
-      initialUnit={initialTimeoutUnit($form.startToCloseTimeout)}
+      initialUnit={initialTimeoutUnit($form.startToCloseTimeout) ?? 'second(s)'}
       units={TIMEOUT_UNITS}
     />
 
@@ -334,7 +344,8 @@
         'standalone-activities.form-schedule-to-close-timeout-hint',
       )}
       bind:value={$form.scheduleToCloseTimeout}
-      initialUnit={initialTimeoutUnit($form.scheduleToCloseTimeout)}
+      initialUnit={initialTimeoutUnit($form.scheduleToCloseTimeout) ??
+        'second(s)'}
       units={TIMEOUT_UNITS}
     />
 
@@ -347,7 +358,8 @@
         'standalone-activities.form-schedule-to-start-timeout-hint',
       )}
       bind:value={$form.scheduleToStartTimeout}
-      initialUnit={initialTimeoutUnit($form.scheduleToStartTimeout)}
+      initialUnit={initialTimeoutUnit($form.scheduleToStartTimeout) ??
+        'second(s)'}
       units={TIMEOUT_UNITS}
     />
 
@@ -417,7 +429,7 @@
           'standalone-activities.form-heartbeat-timeout-hint',
         )}
         bind:value={$form.heartbeatTimeout}
-        initialUnit={initialTimeoutUnit($form.heartbeatTimeout)}
+        initialUnit={initialTimeoutUnit($form.heartbeatTimeout) ?? 'second(s)'}
         units={TIMEOUT_UNITS}
       />
     </Card>

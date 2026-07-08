@@ -93,7 +93,10 @@ const createGroupFor = <K extends keyof StartingEvents>(
       return Array.from(this.events, ([_key, value]) => value);
     },
     get links() {
-      return Array.from(this.events, ([_key, value]) => value.links).flat();
+      return Array.from(
+        this.events,
+        ([_key, value]) => value.links ?? [],
+      ).flat();
     },
     get lastEvent() {
       return getLastEvent(this);
@@ -122,14 +125,17 @@ const createGroupFor = <K extends keyof StartingEvents>(
     },
     get billableActions() {
       return this.eventList.reduce(
-        (acc: number, event: WorkflowEvent) => event.billableActions + acc,
+        (acc: number, event: WorkflowEvent) =>
+          (event.billableActions ?? 0) + acc,
         0,
       );
     },
   };
 };
 
-export const createEventGroup = (event: CommonHistoryEvent): EventGroup => {
+export const createEventGroup = (
+  event: CommonHistoryEvent,
+): EventGroup | undefined => {
   if (isActivityTaskScheduledEvent(event))
     return createGroupFor<'Activity'>(event);
 
@@ -160,7 +166,7 @@ export const createEventGroup = (event: CommonHistoryEvent): EventGroup => {
 
 export const createWorkflowTaskGroup = (
   event: CommonHistoryEvent,
-): EventGroup => {
+): EventGroup | undefined => {
   if (isWorkflowTaskScheduledEvent(event))
     return createGroupFor<'WorkflowTask'>(event);
 };

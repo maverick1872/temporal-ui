@@ -55,12 +55,13 @@
     query?: string,
   ) => Promise<{ items: T[]; nextPageToken: string }>;
 
-  export let onError: (error: Error) => void | undefined = undefined;
+  export let onError: ((error: Error) => void) | undefined = undefined;
   export let onFetch: () => Promise<PaginatedRequest<T>>;
-  export let onShiftUp: (event: KeyboardEvent) => void | undefined = undefined;
-  export let onShiftDown: (event: KeyboardEvent) => void | undefined =
+  export let onShiftUp: ((event: KeyboardEvent) => void) | undefined =
     undefined;
-  export let onSpace: (event: KeyboardEvent) => void | undefined = undefined;
+  export let onShiftDown: ((event: KeyboardEvent) => void) | undefined =
+    undefined;
+  export let onSpace: ((event: KeyboardEvent) => void) | undefined = undefined;
 
   export let pageSizeOptions: string[] | number[] = options;
   export let defaultPageSize: string | number | undefined = undefined;
@@ -72,7 +73,7 @@
   export let previousButtonLabel: string;
   export let nextButtonLabel: string;
   export let filterable = false;
-  export let filterInputPlaceholder: string = undefined;
+  export let filterInputPlaceholder: string | undefined = undefined;
   export let filterDebounceInMilliseconds = 1000;
 
   let query = '';
@@ -82,7 +83,7 @@
     defaultPageSize,
   );
 
-  let error: Error;
+  let error: Error | undefined;
 
   function clearError() {
     if (error) error = undefined;

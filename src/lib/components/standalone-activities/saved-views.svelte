@@ -151,7 +151,7 @@
     const sharableViewUrl =
       new URL(page.url.href) +
       '&savedQuery=' +
-      encodeURIComponent(activeQueryView?.name);
+      encodeURIComponent(activeQueryView?.name ?? '');
     copy(e, sharableViewUrl);
   };
 

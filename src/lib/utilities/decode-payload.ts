@@ -83,11 +83,11 @@ export function base64ParsePayloadMetadata(
   payloadOrPayloads: Payload | Payloads,
 ): ParsedMetadata | ParsedMetadata[] {
   if (isRawPayload(payloadOrPayloads)) {
-    return parseBase64ObjectValues(payloadOrPayloads.metadata);
+    return parseBase64ObjectValues(payloadOrPayloads.metadata ?? {});
   }
 
-  return payloadOrPayloads.payloads.map((payload) =>
-    parseBase64ObjectValues(payload.metadata),
+  return (payloadOrPayloads.payloads ?? []).map((payload) =>
+    parseBase64ObjectValues(payload.metadata ?? {}),
   );
 }
 
@@ -113,7 +113,7 @@ export function parseRawPayloadToJSON(
   try {
     const data = parseWithBigInt(atob(String(payload?.data ?? '')));
     if (returnDataOnly) return data;
-    const metadata = parseBase64ObjectValues(payload?.metadata);
+    const metadata = parseBase64ObjectValues(payload?.metadata ?? {});
     return {
       metadata,
       data,
@@ -129,7 +129,7 @@ export function parseRawPayloadToJSON(
   const encoding = atob(String(payload?.metadata?.encoding ?? ''));
   if (encoding === 'binary/null') {
     if (returnDataOnly) return null;
-    const metadata = parseBase64ObjectValues(payload?.metadata);
+    const metadata = parseBase64ObjectValues(payload?.metadata ?? {});
     return {
       metadata,
       data: null,
@@ -169,7 +169,10 @@ export const parsePayloadAttributes = <
       ? eventAttribute.searchAttributes.indexedFields
       : eventAttribute.searchAttributes;
     Object.entries(searchAttributes).forEach(([key, value]) => {
-      searchAttributes[key] = parseRawPayloadToJSON(value, returnDataOnly);
+      searchAttributes[key] = parseRawPayloadToJSON(
+        value,
+        returnDataOnly,
+      ) as Payload;
     });
   }
 
@@ -181,7 +184,7 @@ export const parsePayloadAttributes = <
     const memo = eventAttribute.memo.fields;
 
     Object.entries(memo).forEach(([key, value]) => {
-      memo[key] = parseRawPayloadToJSON(value, returnDataOnly);
+      memo[key] = parseRawPayloadToJSON(value, returnDataOnly) as Payload;
     });
   }
 
@@ -193,7 +196,7 @@ export const parsePayloadAttributes = <
     const header = eventAttribute.header.fields;
 
     Object.entries(header).forEach(([key, value]) => {
-      header[key] = parseRawPayloadToJSON(value, returnDataOnly);
+      header[key] = parseRawPayloadToJSON(value, returnDataOnly) as Payload;
     });
   }
 
@@ -205,7 +208,10 @@ export const parsePayloadAttributes = <
     const queryResult = eventAttribute?.queryResult;
 
     Object.entries(queryResult).forEach(([key, value]) => {
-      queryResult[key] = parseRawPayloadToJSON(value, returnDataOnly);
+      queryResult[key] = parseRawPayloadToJSON(
+        value,
+        returnDataOnly,
+      ) as Payload;
     });
   }
 
@@ -322,7 +328,7 @@ export async function decodePayloadsAndParseDataToJSON(
   payloads: Payloads | null | undefined,
   returnDataOnly: boolean = true,
 ): Promise<unknown[]> {
-  const decoded = await decodePayloadsWithRemoteCodec(payloads?.payloads);
+  const decoded = await decodePayloadsWithRemoteCodec(payloads?.payloads ?? []);
 
   if (!decoded || !decoded[0]) {
     return [null];

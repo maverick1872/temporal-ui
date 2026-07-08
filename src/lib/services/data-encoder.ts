@@ -34,7 +34,9 @@ export async function codeServerRequest({
   const endpoint = getCodecEndpoint(settings);
 
   if (!endpoint) {
-    if (type === 'decode') return payloads;
+    // Codec payloads are opaque JSON (unknown[]) crossing the REST boundary;
+    // downstream consumers treat them as proto Payloads.
+    if (type === 'decode') return payloads as unknown as Payloads;
     throw NO_CODEC_SERVER_CONFIGURED_ERROR;
   }
 
@@ -58,7 +60,7 @@ export async function codeServerRequest({
       }
     } else {
       setLastDataEncoderFailure();
-      return payloads;
+      return payloads as unknown as Payloads;
     }
   }
 
@@ -104,7 +106,7 @@ export async function codeServerRequest({
       throw err;
     });
 
-  return decoderResponse;
+  return decoderResponse as unknown as Promise<Payloads>;
 }
 
 export async function decodePayloadsWithCodec({

@@ -184,14 +184,14 @@ export type WorkflowExecution = {
   pendingChildren: PendingChildren[];
   pendingNexusOperations: PendingNexusOperation[];
   pendingActivities: PendingActivity[];
-  pendingWorkflowTask: PendingWorkflowTaskInfo;
+  pendingWorkflowTask?: PendingWorkflowTaskInfo;
   stateTransitionCount: string;
   parentNamespaceId?: string;
   parent?: WorkflowIdentifier;
   url: string;
   isRunning: boolean;
   isPaused: boolean;
-  defaultWorkflowTaskTimeout: Duration;
+  defaultWorkflowTaskTimeout?: Duration;
   workflowExecutionTimeout?: Duration;
   canBeTerminated: boolean;
   callbacks: Callback[];

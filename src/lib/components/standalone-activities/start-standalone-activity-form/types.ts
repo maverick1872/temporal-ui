@@ -31,6 +31,7 @@ export type StandaloneActivityFormDefaults = Pick<
   | 'activityId'
   | 'activityType'
   | 'taskQueue'
-  | 'startToCloseTimeout'
-  | 'scheduleToCloseTimeout'
->;
+> & {
+  startToCloseTimeout: string;
+  scheduleToCloseTimeout: string;
+};
