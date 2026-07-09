@@ -53,7 +53,9 @@ describe('getFormScheduleDefaults', () => {
     });
 
     it('seeds a single cron spec', () => {
-      expect(defaults.specs).toEqual([{ kind: 'cron', cronString: '' }]);
+      expect(defaults.specs).toHaveLength(1);
+      expect(defaults.specs[0].kind).toBe('cron');
+      expect(defaults.specs[0].cronString).toBe('');
     });
 
     it('uses the default policies and timeouts', () => {
