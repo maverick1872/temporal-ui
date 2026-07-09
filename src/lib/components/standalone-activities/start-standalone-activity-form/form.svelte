@@ -9,6 +9,7 @@
 
   import { page } from '$app/state';
 
+  import IsTemporalServerVersionGuard from '$lib/components/is-temporal-server-version-guard.svelte';
   import Alert from '$lib/holocene/alert.svelte';
   import Button from '$lib/holocene/button.svelte';
   import Card from '$lib/holocene/card.svelte';
@@ -107,6 +108,7 @@
       summary: z.string().optional(),
       details: z.string().optional(),
       scheduleToStartTimeout: z.string().optional(),
+      startDelay: z.string().optional(),
       heartbeatTimeout: z.string().optional(),
       initialInterval: z.string().default(''),
       backoffCoefficient: z.number().optional().nullable(),
@@ -133,12 +135,14 @@
       }
     });
 
+  // svelte-ignore state_referenced_locally
   const { form, enhance, errors, message } = superForm(
     {
       ...formDefaults,
       input: '',
       messageType: '',
       scheduleToStartTimeout: '',
+      startDelay: '',
       summary: '',
       details: '',
       heartbeatTimeout: '',
@@ -308,7 +312,7 @@
       $errors.startToCloseTimeout ? 'border-danger' : '',
     )}
   >
-    <h5>{translate('standalone-activities.form-timeouts-heading')}</h5>
+    <h5>{translate('standalone-activities.form-options-heading')}</h5>
 
     <DurationInput
       id="startToCloseTimeout"
@@ -356,6 +360,17 @@
         {$errors.startToCloseTimeout}
       </p>
     {/if}
+
+    <IsTemporalServerVersionGuard minimumVersion="1.31.2">
+      <DurationInput
+        id="startDelay"
+        label={translate('standalone-activities.form-start-delay-label')}
+        bind:value={$form.startDelay}
+        initialUnit={initialTimeoutUnit($form.startDelay)}
+        units={TIMEOUT_UNITS}
+        hintText={translate('standalone-activities.form-start-delay-hint')}
+      />
+    </IsTemporalServerVersionGuard>
   </Card>
 
   {#if advancedOptionsVisible}
