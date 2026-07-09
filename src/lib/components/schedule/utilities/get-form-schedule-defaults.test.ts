@@ -129,9 +129,12 @@ describe('getFormScheduleDefaults', () => {
     });
 
     it('loads the interval spec', () => {
-      expect(defaults.specs).toEqual([
-        { kind: 'frozen', interval: { interval: '3600s', phase: '0s' } },
-      ]);
+      expect(defaults.specs).toHaveLength(1);
+      expect(defaults.specs[0].kind).toBe('frozen');
+      expect(defaults.specs[0].interval).toEqual({
+        interval: '3600s',
+        phase: '0s',
+      });
     });
 
     it('parses the overlap policy and timeouts', () => {

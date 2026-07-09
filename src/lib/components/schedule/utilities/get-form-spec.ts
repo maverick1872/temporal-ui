@@ -3,14 +3,18 @@ import type { z } from 'zod/v3';
 import type { DescribeFullSchedule } from '$lib/types/schedule';
 
 import { durationString } from '../schema/common';
-import { formSpecSchema, type FormSpecSchema } from '../schema/form';
+import { formSpecObject, type FormSpecSchema } from '../schema/form';
 
 import type { RangeSpec, ScheduleSpec } from '$types';
 
-// Frozen specs carry only one representation (calendar or interval) and omit
-// the sibling; zod fills the rest with defaults, so the cast bridges to output.
-type FormSpecInput = z.input<typeof formSpecSchema>;
+type FormSpecInput = z.input<typeof formSpecObject>;
 type FormRange = { start: number; end?: number; step?: number };
+
+// Parse a partial input spec through the bare object schema (no cross-field
+// refinements) so zod injects the field defaults, yielding a complete
+// FormSpecSchema.
+const parseFormSpec = (spec: FormSpecInput): FormSpecSchema =>
+  formSpecObject.parse(spec);
 
 function normalizeRanges(
   ranges: RangeSpec[] | null | undefined,
@@ -26,42 +30,46 @@ function normalizeRanges(
 export function getFormSpecFromSpec(
   spec: ScheduleSpec | null | undefined,
 ): FormSpecSchema[] {
-  const specs: FormSpecInput[] = [];
+  const specs: FormSpecSchema[] = [];
 
   for (const calendar of spec?.structuredCalendar ?? []) {
-    specs.push({
-      kind: 'frozen',
-      calendar: {
-        dayOfMonth: calendar.dayOfMonth
-          ? normalizeRanges(calendar.dayOfMonth, 1)
-          : [{ start: 1, end: 31, step: 1 }],
-        dayOfWeek: normalizeRanges(
-          calendar.dayOfWeek ?? [{ start: 0, end: 6, step: 1 }],
-          0,
-        ),
-        hour: normalizeRanges(calendar.hour, 0),
-        minute: normalizeRanges(calendar.minute, 0),
-        second: normalizeRanges(calendar.second, 0),
-        month: calendar.month
-          ? normalizeRanges(calendar.month, 1)
-          : [{ start: 1, end: 12, step: 1 }],
-        year: calendar.year ? normalizeRanges(calendar.year, 0) : undefined,
-        comment: calendar.comment ?? '',
-      },
-    });
+    specs.push(
+      parseFormSpec({
+        kind: 'frozen',
+        calendar: {
+          dayOfMonth: calendar.dayOfMonth
+            ? normalizeRanges(calendar.dayOfMonth, 1)
+            : [{ start: 1, end: 31, step: 1 }],
+          dayOfWeek: normalizeRanges(
+            calendar.dayOfWeek ?? [{ start: 0, end: 6, step: 1 }],
+            0,
+          ),
+          hour: normalizeRanges(calendar.hour, 0),
+          minute: normalizeRanges(calendar.minute, 0),
+          second: normalizeRanges(calendar.second, 0),
+          month: calendar.month
+            ? normalizeRanges(calendar.month, 1)
+            : [{ start: 1, end: 12, step: 1 }],
+          year: calendar.year ? normalizeRanges(calendar.year, 0) : undefined,
+          comment: calendar.comment ?? '',
+        },
+      }),
+    );
   }
 
   for (const interval of spec?.interval ?? []) {
-    specs.push({
-      kind: 'frozen',
-      interval: {
-        interval: durationString().safeParse(interval.interval)?.data ?? '0s',
-        phase: durationString().safeParse(interval.phase)?.data ?? '0s',
-      },
-    });
+    specs.push(
+      parseFormSpec({
+        kind: 'frozen',
+        interval: {
+          interval: durationString().safeParse(interval.interval)?.data ?? '0s',
+          phase: durationString().safeParse(interval.phase)?.data ?? '0s',
+        },
+      }),
+    );
   }
 
-  return specs as unknown as FormSpecSchema[];
+  return specs;
 }
 
 export function getFormSpecsFromDescribeFullSchedule(
