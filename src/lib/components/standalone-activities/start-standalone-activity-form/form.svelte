@@ -49,10 +49,7 @@
   } from '$lib/utilities/route-for';
   import { fromScreamingEnum } from '$lib/utilities/screaming-enums';
 
-  import type {
-    StandaloneActivityFormData,
-    StandaloneActivityFormDefaults,
-  } from './types';
+  import type { StandaloneActivityFormDefaults } from './types';
   import Message from '../../form/message.svelte';
   import PayloadInputWithEncoding from '../../payload-input-with-encoding.svelte';
   import RandomUuidButton from '../../random-uuid-button.svelte';
@@ -162,15 +159,10 @@
       if (!form.valid) return;
 
       try {
-        const { backoffCoefficient, maximumAttempts } = form.data;
         const { runId } = await startStandaloneActivity({
           ...form.data,
-          backoffCoefficient: backoffCoefficient
-            ? Number(backoffCoefficient)
-            : null,
-          maximumAttempts: maximumAttempts ? Number(maximumAttempts) : null,
           searchAttributes,
-        } as StandaloneActivityFormData);
+        });
         toaster.push({
           duration: 5000,
           variant: 'success',

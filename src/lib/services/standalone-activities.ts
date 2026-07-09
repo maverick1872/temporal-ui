@@ -110,7 +110,7 @@ export const fetchPaginatedActivities = async (
   };
 };
 
-const toStartActivityExecutionRequest = async (
+export const toStartActivityExecutionRequest = async (
   activityFormData: StandaloneActivityFormData,
 ): Promise<StartActivityExecutionRequest> => {
   let inputPayloads: Payload[] | null = null;
