@@ -51,22 +51,11 @@
     duration: string,
     units: Units<UnitLabelT>,
     defaultUnit: UnitLabelT,
-  ): UnitLabelT;
-  export function getFirstWholeNumberUnit<UnitLabelT extends string>(
-    duration: string,
-    units: Units<UnitLabelT>,
-    defaultUnit?: UnitLabelT,
-  ): UnitLabelT | undefined;
-  export function getFirstWholeNumberUnit<UnitLabelT extends string>(
-    duration: string,
-    units: Units<UnitLabelT>,
-    defaultUnit?: UnitLabelT,
-  ): UnitLabelT | undefined {
+  ): UnitLabelT {
     const secondsValue = Number(parseDuration(duration));
 
     if (secondsValue === 0) {
-      // no value: use the provided default, else the last unit label
-      return defaultUnit ?? units.at(-1)?.label;
+      return defaultUnit;
     }
 
     for (const unit of units) {

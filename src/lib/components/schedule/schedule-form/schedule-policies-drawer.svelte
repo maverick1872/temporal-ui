@@ -225,7 +225,8 @@
           initialUnit={getFirstWholeNumberUnit(
             $policies.catchupWindow,
             durationUnits,
-          ) ?? 'second(s)'}
+            'second(s)',
+          )}
           units={durationUnits}
           error={!!$errors.catchupWindow?.[0]}
           hintText={$errors.catchupWindow?.[0] ?? ''}
@@ -263,7 +264,8 @@
         initialUnit={getFirstWholeNumberUnit(
           $policies.taskTimeout,
           durationUnits,
-        ) ?? 'second(s)'}
+          'second(s)',
+        )}
         units={durationUnits}
         error={!!$errors.taskTimeout?.[0]}
         hintText={$errors.taskTimeout?.[0] ?? ''}
@@ -282,7 +284,8 @@
         initialUnit={getFirstWholeNumberUnit(
           $policies.runTimeout,
           durationUnits,
-        ) ?? 'second(s)'}
+          'second(s)',
+        )}
         units={durationUnits}
         error={!!$errors.runTimeout?.[0]}
         hintText={$errors.runTimeout?.[0] ?? ''}
@@ -300,7 +303,8 @@
         initialUnit={getFirstWholeNumberUnit(
           $policies.executionTimeout,
           durationUnits,
-        ) ?? 'second(s)'}
+          'second(s)',
+        )}
         units={durationUnits}
         error={!!$errors.executionTimeout?.[0]}
         hintText={$errors.executionTimeout?.[0] ?? ''}
