@@ -180,6 +180,7 @@
           <CodeBlock
             {content}
             language={jsonFormatting ? 'json' : 'text'}
+            label={translate('workflows.query-result')}
             copyIconTitle={translate('common.copy-icon-title')}
             copySuccessIconTitle={translate('common.copy-success-icon-title')}
             testId="query-result"

@@ -82,59 +82,35 @@
     year: 'numeric',
   });
 
-  const schema = z
-    .object({
-      identity: z.string(),
-      namespace: z.string(),
-      operationId: z.string().default(''),
-      endpoint: z.string().min(1, {
-        message: translate(
-          'standalone-nexus-operations.form-endpoint-required',
-        ),
-      }),
-      service: z.string().min(1, {
-        message: translate('standalone-nexus-operations.form-service-required'),
-      }),
-      operation: z.string().min(1, {
-        message: translate(
-          'standalone-nexus-operations.form-operation-name-required',
-        ),
-      }),
-      input: z.string().default(''),
-      encoding: z.enum(encodings).default('json/plain'),
-      messageType: z.string().default(''),
-      startToCloseTimeout: z.string().default(''),
-      scheduleToCloseTimeout: z.string().default(''),
-      scheduleToStartTimeout: z.string().default(''),
-      idReusePolicy: z.string().default(''),
-      idConflictPolicy: z.string().default(''),
-      summary: z.string().default(''),
-      details: z.string().default(''),
-      nexusHeader: z
-        .array(z.object({ key: z.string(), value: z.string() }))
-        .default([]),
-    })
-    .superRefine((data, context) => {
-      if (
-        !isPositiveDuration(data.startToCloseTimeout) &&
-        !isPositiveDuration(data.scheduleToCloseTimeout)
-      ) {
-        context.addIssue({
-          code: z.ZodIssueCode.custom,
-          path: ['startToCloseTimeout'],
-          message: translate(
-            'standalone-nexus-operations.form-timeout-required',
-          ),
-        });
-        context.addIssue({
-          code: z.ZodIssueCode.custom,
-          path: ['scheduleToCloseTimeout'],
-          message: translate(
-            'standalone-nexus-operations.form-timeout-required',
-          ),
-        });
-      }
-    });
+  const schema = z.object({
+    identity: z.string(),
+    namespace: z.string(),
+    operationId: z.string().default(''),
+    endpoint: z.string().min(1, {
+      message: translate('standalone-nexus-operations.form-endpoint-required'),
+    }),
+    service: z.string().min(1, {
+      message: translate('standalone-nexus-operations.form-service-required'),
+    }),
+    operation: z.string().min(1, {
+      message: translate(
+        'standalone-nexus-operations.form-operation-name-required',
+      ),
+    }),
+    input: z.string().default(''),
+    encoding: z.enum(encodings).default('json/plain'),
+    messageType: z.string().default(''),
+    startToCloseTimeout: z.string().default(''),
+    scheduleToCloseTimeout: z.string().default(''),
+    scheduleToStartTimeout: z.string().default(''),
+    idReusePolicy: z.string().default(''),
+    idConflictPolicy: z.string().default(''),
+    summary: z.string().default(''),
+    details: z.string().default(''),
+    nexusHeader: z
+      .array(z.object({ key: z.string(), value: z.string() }))
+      .default([]),
+  });
 
   let operationIdServerError = $state('');
   let operationIdConflictInfo = $state<{
@@ -313,6 +289,7 @@
     const initialValues = await fetchInitialValuesForStartNexusOperation(
       namespace,
       operationIdParam,
+      runIdParam,
     );
 
     $form.input = initialValues.input;
@@ -581,9 +558,6 @@
             </dd>
           </div>
         </dl>
-        {#if $errors.startToCloseTimeout}
-          <p class="text-xs text-danger">{$errors.startToCloseTimeout}</p>
-        {/if}
       </Card>
 
       <Card class="space-y-4">
@@ -731,6 +705,5 @@
     bind:scheduleToStartTimeout={$form.scheduleToStartTimeout}
     bind:idReusePolicy={$form.idReusePolicy}
     bind:idConflictPolicy={$form.idConflictPolicy}
-    timeoutError={$errors.startToCloseTimeout?.[0]}
   />
 </form>

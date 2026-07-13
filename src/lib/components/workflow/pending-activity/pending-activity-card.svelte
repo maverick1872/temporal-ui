@@ -175,7 +175,11 @@
     </p>
     {#key activity.attempt}
       {#if activity.heartbeatDetails}
-        <PayloadCodeBlock value={activity.heartbeatDetails} maxHeight={384} />
+        <PayloadCodeBlock
+          value={activity.heartbeatDetails}
+          label={translate('workflows.heartbeat-details')}
+          maxHeight={384}
+        />
       {/if}
     {/key}
   </div>
@@ -191,6 +195,7 @@
         {#key activity.attempt}
           <PayloadCodeBlock
             value={omit(activity.lastFailure, 'stackTrace')}
+            label={translate('workflows.last-failure')}
             maxHeight={384}
           />
         {/key}
@@ -205,6 +210,7 @@
           language="text"
           maxHeight={384}
           content={activity.lastFailure.stackTrace}
+          label={translate('common.stack-trace')}
           copyIconTitle={translate('common.copy-icon-title')}
           copySuccessIconTitle={translate('common.copy-success-icon-title')}
         />

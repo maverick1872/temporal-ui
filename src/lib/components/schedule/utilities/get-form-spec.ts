@@ -44,9 +44,21 @@ export function getFormSpecFromSpec(
             calendar.dayOfWeek ?? [{ start: 0, end: 6, step: 1 }],
             0,
           ),
-          hour: normalizeRanges(calendar.hour, 0),
-          minute: normalizeRanges(calendar.minute, 0),
-          second: normalizeRanges(calendar.second, 0),
+          // An absent second/minute/hour must default to 0, not an empty range.
+          // An empty range tells the server to exclude everything, so no future
+          // runs would occur.
+          hour: normalizeRanges(
+            calendar.hour ?? [{ start: 0, end: 0, step: 1 }],
+            0,
+          ),
+          minute: normalizeRanges(
+            calendar.minute ?? [{ start: 0, end: 0, step: 1 }],
+            0,
+          ),
+          second: normalizeRanges(
+            calendar.second ?? [{ start: 0, end: 0, step: 1 }],
+            0,
+          ),
           month: calendar.month
             ? normalizeRanges(calendar.month, 1)
             : [{ start: 1, end: 12, step: 1 }],
