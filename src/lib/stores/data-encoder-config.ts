@@ -28,6 +28,8 @@ export const overrideRemoteCodecConfiguration = persistStore<boolean>(
   true,
 );
 
+export const codecEnabled = persistStore<boolean>('codecEnabled', true, true);
+
 export const lastDataEncoderStatus =
   writable<DataEncoderStatus>('notRequested');
 

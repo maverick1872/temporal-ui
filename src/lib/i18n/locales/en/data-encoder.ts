@@ -29,4 +29,5 @@ export const Strings = {
   'codec-server-success': 'Codec Server succesfully converted content',
   'configure-codec-server': 'Configure Codec Server',
   'encode-error': 'Codec Server failed to encode',
+  'codec-server-enabled-label': 'Enable Codec Server',
 } as const;

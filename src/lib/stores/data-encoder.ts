@@ -4,6 +4,7 @@ import { page } from '$app/stores';
 
 import { lastDataConverterStatus } from './data-converter-config';
 import {
+  codecEnabled,
   codecEndpoint,
   lastDataEncoderStatus,
   overrideRemoteCodecConfiguration,
@@ -26,6 +27,7 @@ export const dataEncoder = derived(
   [
     page,
     codecEndpoint,
+    codecEnabled,
     overrideRemoteCodecConfiguration,
     lastDataEncoderStatus,
     lastDataConverterStatus,
@@ -33,6 +35,7 @@ export const dataEncoder = derived(
   ([
     $page,
     $codecEndpoint,
+    $codecEnabled,
     $overrideRemoteCodecConfiguration,
     $lastDataEncoderStatus,
     $lastDataConverterStatus,
@@ -50,9 +53,11 @@ export const dataEncoder = derived(
     const settingsIncludeCredentials = Boolean(
       $page?.data?.settings?.codec?.includeCredentials,
     );
-    const endpoint = $overrideRemoteCodecConfiguration
-      ? $codecEndpoint
-      : settingsEndpoint || $codecEndpoint;
+    const endpoint = $codecEnabled
+      ? $overrideRemoteCodecConfiguration
+        ? $codecEndpoint
+        : settingsEndpoint || $codecEndpoint
+      : '';
     const hasNotRequested = endpoint
       ? $lastDataEncoderStatus === 'notRequested'
       : $lastDataConverterStatus === 'notRequested';

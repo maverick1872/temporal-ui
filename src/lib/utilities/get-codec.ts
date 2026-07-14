@@ -1,6 +1,7 @@
 import { get } from 'svelte/store';
 
 import {
+  codecEnabled,
   codecEndpoint,
   includeCredentials,
   overrideRemoteCodecConfiguration,
@@ -12,7 +13,9 @@ export const getCodecEndpoint = (
   settings: Settings,
   endpoint = codecEndpoint,
   override = overrideRemoteCodecConfiguration,
+  enabled = codecEnabled,
 ): string => {
+  if (!get(enabled)) return '';
   const overrideEndpoint = get(override) && get(endpoint);
   return overrideEndpoint || settings?.codec?.endpoint || '';
 };
